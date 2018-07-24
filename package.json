@@ -1,0 +1,39 @@
+{
+  "name": "sisgo",
+  "version": "1.0.0",
+  "description": "Sistema de Gestão Odontológica, sistema para gestão de clínicas odontológicas e/ou cirurgiões dentistas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wac0013/SisGO.git"
+  },
+  "keywords": [
+    "odonto",
+    "dentista",
+    "sistema",
+    "gestão",
+    "odontologia"
+  ],
+  "author": "Wellington Alves Costa <wac.0013@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wac0013/SisGO/issues"
+  },
+  "homepage": "https://github.com/wac0013/SisGO#readme",
+  "dependencies": {
+    "express": "^4.16.3",
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1"
+  },
+  "devDependencies": {
+    "css-loader": "^1.0.0",
+    "gulp": "github:gulpjs/gulp#4.0",
+    "ts-loader": "^4.4.2",
+    "typescript": "^2.9.2",
+    "vue-loader": "^15.2.6",
+    "webpack": "^4.16.2"
+  }
+}
