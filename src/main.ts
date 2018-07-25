@@ -15,7 +15,7 @@ export class Servidor {
 
   public static IniciarServidor() {
     new Servidor();
-  }
+  }6
 
   constructor() {
     this._config = {
