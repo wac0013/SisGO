@@ -1,14 +1,20 @@
 {
   "compilerOptions": {
-      "outDir": "./server/",
-      "sourceMap": true,
-      "strict": true,
-      "noImplicitReturns": true,
-      "module": "es2015",
-      "moduleResolution": "node",
-      "target": "es5"
+    "outDir": "./build/",
+    "sourceMap": true,
+    "noImplicitReturns": true,
+    "module": "es2015",
+    "moduleResolution": "node",
+    "target": "es5",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "rootDir": "./src",
+    "strict": true,
+    "locale": "pt-BR",
+    "newLine": "LF"
   },
-  "include": [
-      "./src/**/*"
-  ]
+  "exclude": ["./node_modules", "./client", "./dist", "./build"],
+  "include": ["./src/**/*"]
 }

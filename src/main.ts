@@ -9,13 +9,20 @@ import * as spdy from "spdy";
 // import methodOverride = require("method-override");
 
 export class Servidor {
-  public app: express.Application;
+  private _app: express.Application;
+  private _http2: spdy.Server;
+  private _config: Object;
 
-  public static IniciarServidor(): Servidor {
-    return new Servidor();
+  public static IniciarServidor() {
+    new Servidor();
   }
 
   constructor() {
-    this.app = express();
+    this._config = {
+      key: fs.readFileSync(__dirname + "/certificado/server.key"),
+      cert: fs.readFileSync(__dirname + "/certificado/server.crt")
+    };
+    this._app = express();
+    this._http2 = spdy();
   }
 }
