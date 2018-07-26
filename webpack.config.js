@@ -1,8 +1,14 @@
-var path = require("path");
-var webpack = require("webpack");
+const path = require("path"),
+  webpack = require("webpack"),
+  DashboardPlugin = require("webpack-dashboard/plugin"),
+  HtmlWebpackPlugin = require("html-webpack-plugin"),
+  FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
 
 module.exports = {
-  entry: "./client/src/main.js",
+  entry: [
+    "./client/src/main.js",
+    "webpack-hot-middleware/client?overlay=false"
+  ],
   output: {
     path: path.resolve(__dirname, "./dist"),
     publicPath: "/dist/",
@@ -49,7 +55,7 @@ module.exports = {
   devtool: "#eval-source-map"
 };
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" || "pro") {
   module.exports.devtool = "#source-map";
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
@@ -66,6 +72,45 @@ if (process.env.NODE_ENV === "production") {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
+    }),
+    new HtmlWebpackPlugin({
+      filename: "index.html",
+      template: path.join(__dirname, "./client/static/view/index.html"),
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      }
+    })
+  ]);
+} else if (process.env.NODE_ENV === "development" || "dev") {
+  module.exports.devtool = "eval-source-map";
+  // http://vue-loader.vuejs.org/en/workflow/production.html
+  module.exports.plugins = (module.exports.plugins || []).concat([
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: "development"
+      }
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
+      compress: {
+        warnings: false
+      }
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    }),
+    new DashboardPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.NamedModulesPlugin(),
+    new FriendlyErrorsPlugin(),
+    new HtmlWebpackPlugin({
+      filename: "index.html",
+      template: path.join(__dirname, "./client/static/view/index.html"),
+      inject: true
     })
   ]);
 }
