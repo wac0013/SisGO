@@ -1,3 +1,5 @@
-class Rota {}
+import { Router, Request, Response } from "express";
 
-module.exports = new Rota();
+const rotas: Router = Router();
+
+export default rotas;

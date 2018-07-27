@@ -1,8 +1,8 @@
-const path = require("path"),
-  webpack = require("webpack"),
-  DashboardPlugin = require("webpack-dashboard/plugin"),
-  HtmlWebpackPlugin = require("html-webpack-plugin"),
-  FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
+const path          = require("path"),
+  webpack           = require("webpack"),
+  DashboardPlugin   = require("webpack-dashboard/plugin"),
+  HtmlWebpackPlugin = require("html-webpack-plugin");
+  // FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
 
 module.exports = {
   entry: [
@@ -64,12 +64,12 @@ if (process.env.NODE_ENV === "production" || "pro") {
         NODE_ENV: "production"
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
+    /* new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compress: {
         warnings: false
       }
-    }),
+    }), */
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
@@ -92,13 +92,13 @@ if (process.env.NODE_ENV === "production" || "pro") {
       "process.env": {
         NODE_ENV: "development"
       }
-    }),
+    }), /*
     new webpack.optimize.UglifyJsPlugin({
       sourceMap: true,
       compress: {
         warnings: false
       }
-    }),
+    }), */
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
@@ -106,7 +106,7 @@ if (process.env.NODE_ENV === "production" || "pro") {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.NamedModulesPlugin(),
-    new FriendlyErrorsPlugin(),
+    // new FriendlyErrorsPlugin(),
     new HtmlWebpackPlugin({
       filename: "index.html",
       template: path.join(__dirname, "./client/static/view/index.html"),

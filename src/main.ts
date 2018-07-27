@@ -1,6 +1,5 @@
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
-import * as session from "cookie-session";
 import * as compression from "compression";
 import * as webpackDevMiddleware from "webpack-dev-middleware";
 import * as webpackHotMiddleware from "webpack-hot-middleware";
@@ -35,7 +34,8 @@ export class Servidor {
   }
 
   private constructor() {
-    const compiler = webpack(require("../webpack.config.js"));
+    const compiler  = webpack(require("../webpack.config.js"));
+    const session   = require("cookie-session");
     this._config = {
       key: fs.readFileSync(__dirname + "/certificado/server.key"),
       cert: fs.readFileSync(__dirname + "/certificado/server.crt")
