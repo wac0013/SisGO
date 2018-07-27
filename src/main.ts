@@ -11,6 +11,7 @@ import * as spdy from "spdy";
 import * as webpack from "webpack";
 import * as helmet from "helmet";
 import rotas from "./routes";
+import { Server } from "http";
 
 export class Servidor {
   private _app: express.Application;
@@ -34,28 +35,33 @@ export class Servidor {
   }
 
   private constructor() {
-    const compiler  = webpack(require("../webpack.config.js"));
-    const session   = require("cookie-session");
+    const compiler = webpack(require("../webpack.config.js"));
+    const session = require("cookie-session");
     this._config = {
-      key: fs.readFileSync(__dirname + "/certificado/server.key"),
-      cert: fs.readFileSync(__dirname + "/certificado/server.crt")
+      key: fs.readFileSync(path.join(__dirname, "../certificado/server.key")),
+      cert: fs.readFileSync(path.join(__dirname, "../certificado/server.crt"))
     };
 
     this._app = express();
     this._app.use(express.static(path.join(__dirname, "../dist/public")));
-    this._app.use(
-      webpackDevMiddleware(compiler, {
-        publicPath: path.join(__dirname, ""),
-        stats: { colors: true }
-      })
-    );
-    this._app.use(
-      webpackHotMiddleware(compiler, {
-        log: console.log,
-        path: "/__webpack_hmr",
-        heartbeat: 10 * 1000
-      })
-    );
+
+    if (process.env.NODE_ENV === "development" || "dev") {
+      this._app.use(
+        webpackDevMiddleware(compiler, {
+          publicPath: path.join(__dirname, ""),
+          logLevel: "silent",
+          stats: {colors: true}
+        })
+      );
+      this._app.use(
+        webpackHotMiddleware(compiler, {
+          log: console.log,
+          path: "/__webpack_hmr",
+          heartbeat: 10 * 1000,
+          reload: true
+        })
+      );
+    }
     this._app.set("views", path.join(__dirname, "../dist/public/views"));
     this._app.set("view engine", "html");
     this._app.use(helmet());
@@ -77,3 +83,5 @@ export class Servidor {
     this._http2 = spdy.createServer(this._config, this._app);
   }
 }
+
+Servidor.IniciarServidor();

@@ -1,52 +1,52 @@
 const del = require("del"),
   gulp = require("gulp"),
   gutil = require("gulp-util"),
-  rename = require("gulp-rename"),
+  merge = require("merge2"),
   webpack = require("webpack"),
   nodemon = require("gulp-nodemon"),
   typescript = require("gulp-typescript"),
-  // sourcemaps = require("gulp-sourcemaps"),
+  sourcemaps = require("gulp-sourcemaps"),
   webpackConfig = require("./webpack.config");
 
-gulp.task("limpar", (cb) => {
-  del(["./dist/"]);
-  cb();
+gulp.task("limpar", done => {
+  del(["./dist/**.*"]);
+  done();
 });
 
-gulp.task("copiar", () => {
-  return gulp.src(["./client/static/"]).pipe(gulp.dest("./dist/public/"));
+gulp.task("copiar", done => {
+  gulp.src(["./client/static/"]).pipe(gulp.dest("./dist/public/"));
+  done();
 });
 
 gulp.task("build:server", () => {
-  var tsConfig = typescript.createProject("tsconfig.json", {
-    typescript: require("typescript")
-  });
-  var tsResult = tsConfig.src().pipe(tsConfig());
+  var tsConfig = typescript.createProject("./tsconfig.json");
+  var ts = tsConfig
+    .src()
+    .pipe(sourcemaps.init({ largeFile: true }))
+    .pipe(tsConfig());
 
-  return tsResult.js
-    .pipe(
-      rename(function(path) {
-        path.dirname = path.dirname.replace("src", "");
-      })
-    )
-    .pipe(gulp.dest("build/"));
+  return merge([
+    ts.js
+      .pipe(sourcemaps.write(".", { sourceRoot: "./", addComment: false }))
+      .pipe(gulp.dest("./build")),
+    ts.dts
+      .pipe(sourcemaps.write(".", {sourceRoot: "../definitions", addComment: false}))
+      .pipe(gulp.dest("./build/definitions"))
+  ]);
 });
 
-gulp.task("build:client", cb => {
+gulp.task("build:client", done => {
   webpack(webpackConfig, function(erro) {
     if (erro) {
       throw new gutil.PluginError("webpack:build", erro);
     }
-    cb();
+    done();
   });
 });
 
-gulp.task(
-  "build",
-  gulp.series("limpar", "copiar", "build:client", "build:server")
-);
+gulp.task("build", gulp.series("limpar", "copiar", "build:client", "build:server"));
 
-gulp.task("nodemon", (cb) => {
+gulp.task("nodemon", done => {
   const stream = nodemon({
     script: "./build/main.js",
     ext: "js",
@@ -54,24 +54,34 @@ gulp.task("nodemon", (cb) => {
       NODE_ENV: "dev",
       PORT: 3000
     },
-    watch: "./build",
-    done: cb
+    watch: ["build"],
+    ignore: ["./node_modules", "./src", "./dist"],
+    exec: "node --inspect=9229",
+    delay: 5000
   });
 
-  stream.on("restart", function() {
-    console.log("Reiniciando");
-  }).on("crash", function() {
-    console.error("Aplicação parou de funcionar!\n");
-    stream.emit("restart", 10);
-  });
-
-  cb();
+  stream
+    .on("restart", function() {
+      gutil.log("Reiniciando");
+    })
+    .on("crash", function() {
+      gutil.log("Aplicação parou de funcionar!\n");
+      stream.emit("restart", 10);
+    })
+    .on("start", done);
 });
 
-gulp.watch();
+gulp.task("monitorar", /* gulp.parallel("nodemon"), */ () => {
+  gulp
+    .watch("./src/", { delay: 2000 }, gulp.series("build:server"))
+    .on("change", () => {
+      gutil.log("recompilando servidor!");
+    });
+  gulp.watch("./client/static/", gulp.series("copiar"));
+});
 
 gulp.task("pro");
 
-gulp.task("dev", gulp.series("build"));
+gulp.task("dev", gulp.series("build", gulp.parallel("monitorar", "nodemon")));
 
 gulp.task("default");
