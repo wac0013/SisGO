@@ -1,5 +1,9 @@
-import { Router, Request, Response } from "express";
+import { Request, Response, Application } from 'express';
 
-const rotas: Router = Router();
-
-export default rotas;
+export class Rotas {
+  public rotas(app: Application): void {
+    app.route('/').get((req: Request, res: Response) => {
+      //
+    });
+  }
+}

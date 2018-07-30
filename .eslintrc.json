@@ -250,7 +250,7 @@
     "prefer-promise-reject-errors": "error",
     "quotes": [
       "warn",
-      "double",
+      "single",
       {
         "avoidEscape": true,
         "allowTemplateLiterals": true

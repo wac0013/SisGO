@@ -3,6 +3,7 @@
     "outDir": "./build/",
     "sourceMap": true,
     "noImplicitReturns": true,
+    "noEmitOnError": false,
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "es6",

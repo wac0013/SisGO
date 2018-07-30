@@ -1,67 +1,64 @@
-const path          = require("path"),
-  webpack           = require("webpack"),
-  DashboardPlugin   = require("webpack-dashboard/plugin"),
-  HtmlWebpackPlugin = require("html-webpack-plugin");
-  // FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
+const path          = require('path'),
+  webpack           = require('webpack'),
+  DashboardPlugin   = require('webpack-dashboard/plugin'),
+  HtmlWebpackPlugin = require('html-webpack-plugin'),
+  VueLoaderPlugin   = require('vue-loader/lib/plugin');
+  // FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
 module.exports = {
   entry: [
-    "./client/src/main.js",
-    "webpack-hot-middleware/client?overlay=false"
+    './client/src/main.js',
+    'webpack-hot-middleware/client?overlay=false'
   ],
   output: {
-    path: path.resolve(__dirname, "./dist"),
-    publicPath: "/dist/",
-    filename: "js/[name].js"
+    path: path.resolve(__dirname, './dist/public'),
+    publicPath: '/',
+    filename: 'js/[name].js'
   },
   module: {
     rules: [
       {
         test: /\.vue$/,
-        loader: "vue-loader",
+        loader: 'vue-loader',
         options: {
           loaders: {
             // Since sass-loader (weirdly) has SCSS as its default parse mode, we map
             // the 'scss' and 'sass' values for the lang attribute to the right configs here.
             // other preprocessors should work out of the box, no loader config like this necessary.
-            scss: "vue-style-loader!css-loader!sass-loader",
-            sass: "vue-style-loader!css-loader!sass-loader?indentedSyntax"
+            scss: 'vue-style-loader!css-loader!sass-loader',
+            sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
           }
           // other vue-loader options go here
         }
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
-        loader: "file-loader",
+        loader: 'file-loader',
         options: {
-          name: "[name].[ext]?[hash]"
+          name: '[name].[ext]?[hash]'
         }
       }
     ]
   },
   resolve: {
-    extensions: [".ts", ".js", ".vue", ".json"],
+    extensions: ['.ts', '.js', '.vue', '.json'],
     alias: {
-      vue$: "vue/dist/vue.esm.js"
+      vue$: 'vue/dist/vue.esm.js'
     }
-  },
-  devServer: {
-    historyApiFallback: true,
-    noInfo: true
   },
   performance: {
     hints: false
-  },
-  devtool: "#eval-source-map"
+  }
 };
 
-if (process.env.NODE_ENV === "production" || "pro") {
-  module.exports.devtool = "#source-map";
+if (process.env.NODE_ENV === 'production' || 'pro') {
+  module.exports.devtool = '#source-map';
+  module.exports.mode = 'production';
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: "production"
+      'process.env': {
+        NODE_ENV: '"production"'
       }
     }),
     /* new webpack.optimize.UglifyJsPlugin({
@@ -73,9 +70,10 @@ if (process.env.NODE_ENV === "production" || "pro") {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
+    new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: path.join(__dirname, "./client/static/view/index.html"),
+      filename: 'index.html',
+      template: path.join(__dirname, './client/static/view/index.html'),
       inject: true,
       minify: {
         removeComments: true,
@@ -84,13 +82,14 @@ if (process.env.NODE_ENV === "production" || "pro") {
       }
     })
   ]);
-} else if (process.env.NODE_ENV === "development" || "dev") {
-  module.exports.devtool = "eval-source-map";
+} else if (process.env.NODE_ENV === 'development' || 'dev') {
+  module.exports.devtool = '#eval-source-map';
+  module.exports.mode = 'development';
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: "development"
+      'process.env': {
+        NODE_ENV: 'development'
       }
     }), /*
     new webpack.optimize.UglifyJsPlugin({
@@ -102,14 +101,15 @@ if (process.env.NODE_ENV === "production" || "pro") {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
+    new VueLoaderPlugin(),
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.NamedModulesPlugin(),
     // new FriendlyErrorsPlugin(),
     new HtmlWebpackPlugin({
-      filename: "index.html",
-      template: path.join(__dirname, "./client/static/view/index.html"),
+      filename: 'index.html',
+      template: path.join(__dirname, './client/static/view/index.html'),
       inject: true
     })
   ]);
