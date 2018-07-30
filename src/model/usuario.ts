@@ -1,7 +1,4 @@
-import {Table, Column, Model} from 'sequelize-typescript';
-
-class Usuario extends Model<Usuario> {
-  @Column
+@Tabela
+class Usuario {
   private login: string;
-
 }

@@ -1,0 +1,23 @@
+CREATE DATABASE 'sisgo';
+CREATE USER 'sisgo'@'%' ;
+ALTER USER 'sisgo'@'%'
+IDENTIFIED BY 'DADOS' ;
+GRANT Alter ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Create ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Create view ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Delete ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Drop ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Grant option ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Index ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Insert ON sisgo.* TO 'sisgo'@'%' ;
+GRANT References ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Select ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Show view ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Trigger ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Update ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Alter routine ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Create routine ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Create temporary tables ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Execute ON sisgo.* TO 'sisgo'@'%' ;
+GRANT Lock tables ON sisgo.* TO 'sisgo'@'%' ;
+FLUSH PRIVILEGES;
