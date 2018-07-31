@@ -1,4 +1,10 @@
-@Tabela
+import { Tabela, Coluna } from '../db/decorators';
+
+@Tabela()
 class Usuario {
-  private login: string;
+  @Coluna() private _login: string;
+
+  constructor(login: string) {
+    this._login = login;
+  }
 }

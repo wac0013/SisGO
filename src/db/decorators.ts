@@ -1,25 +1,23 @@
-import {bd} from './index';
+import { bd } from './index';
+import * as seq from 'sequelize';
 
-function Tabela(nome_tabela: string) {
-  return (target: Function) => {
+export interface IColuna {
+  nome: string;
+  tipo: seq.DataTypes;
+}
+
+export function Tabela(nome_tabela?: string) {
+  return function(target: Function) {
     const classeOriginal = target;
+    const _nome_tabela = nome_tabela ? nome_tabela.toUpperCase() : classeOriginal.name.toUpperCase();
 
-    function construir(constructor: Function, args: any) {
-      const c: any = function() {
-        return constructor.apply(this, args);
-      };
 
-      c.prototype = constructor.prototype;
-      return new c();
-    }
+    bd.define(_nome_tabela, {});
+  };
+}
 
-    const novaClasse: any = function(...args: any[]) {
-      bd.define(nome_tabela || , {});
-      return construir(classeOriginal, args);
-    };
-
-    novaClasse.prototype = classeOriginal.prototype;
-
-    return novaClasse;
+export function Coluna(info?: IColuna) {
+  return (target: Object, key: string) => {
+    const valor = this[key];
   };
 }
