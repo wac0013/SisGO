@@ -1,3 +1,5 @@
+'use strict';
+
 export function Tabela(nome_tabela?: string) {
   return function(target: Function) {
     const classeOriginal = target;

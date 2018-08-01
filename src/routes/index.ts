@@ -1,3 +1,5 @@
+'use strict';
+
 import { Request, Response, Application } from 'express';
 
 export class Rotas {

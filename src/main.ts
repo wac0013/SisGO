@@ -1,3 +1,5 @@
+'use strict';
+
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
@@ -26,9 +28,7 @@ export class Servidor {
 
     app._http2.listen(porta, function(erro: Error) {
       if (erro) {
-        console.error(
-          'Ocorreu um erro ao iniciar o servidor na porta ' + 3000 + '\n' + erro
-        );
+        console.error('Ocorreu um erro ao iniciar o servidor na porta ' + 3000 + '\n' + erro);
         process.exit(1);
       } else {
         console.info('Servidor executando na porta ' + 3000 + '!');
@@ -45,7 +45,7 @@ export class Servidor {
 
     this._config = {
       key: fs.readFileSync(path.join(__dirname, '../certificado/server.key')),
-      cert: fs.readFileSync(path.join(__dirname, '../certificado/server.crt'))
+      cert: fs.readFileSync(path.join(__dirname, '../certificado/server.crt')),
     };
 
     this._app.use(express.static(path.join(__dirname, '../dist/public')));
@@ -56,16 +56,16 @@ export class Servidor {
         webpackDevMiddleware(compiler, {
           publicPath: path.join(__dirname, ''),
           logLevel: 'info',
-          stats: 'minimal'
-        })
+          stats: 'minimal',
+        }),
       );
       this._app.use(
         webpackHotMiddleware(compiler, {
           log: console.log,
           path: '/__webpack_hmr',
           heartbeat: 10 * 1000,
-          reload: true
-        })
+          reload: true,
+        }),
       );
     }
     this._app.set('views', path.join(__dirname, '../dist/public/views'));
@@ -81,8 +81,8 @@ export class Servidor {
         keys: ['chave1'],
         secure: true,
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 horas para expirar
-      })
+        maxAge: 24 * 60 * 60 * 1000, // 24 horas para expirar
+      }),
     );
     // configurando rotas
     this._rotas.rotas(this._app);

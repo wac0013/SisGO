@@ -1,3 +1,5 @@
+'use strict';
+
 import { Tabela, Coluna } from '../db/decorators';
 
 @Tabela()
