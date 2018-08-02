@@ -7,65 +7,94 @@ import * as config_bd from '../../config';
 import { ErroBanco } from './errosBanco';
 
 class Conexao {
-  private _pool: mysql.Pool;
   private _host: string;
   private _porta: number;
   private _banco: string;
   private _usuario: string;
   private _senha: string;
+  private _con: mysql.PoolConnection;
 
   private static _schema: Tabela[];
-  private static _con: Conexao;
+  private static _pool: mysql.Pool;
 
-  private static getConexao(): Conexao {
-    if (!this._con) {
-      try {
-        this._con = new Conexao();
-      } catch (error) {
-        throw new ErroBanco(error);
-      }
-
-      this._schema = [];
+  private constructor(con?: mysql.Connection) {
+    if (!con) {
+      this = Conexao.getConexao();
+    } else {
+      this._con = con;
     }
-
-    return this._con;
   }
 
-  private constructor() {
-    this._pool = mysql.createPool({
-      host: config_bd.host || 'localhost',
-      port: config_bd.porta || 3306,
-      database: config_bd.nome_bd || 'sisgo',
-      user: config_bd.usuario || 'sisgo',
-      password: config_bd.senha || 'DADOS',
-      queueLimit: config_bd.pool.max_fila || 10, // número máximo de conexões na fila de espera do pool
-      connectionLimit: config_bd.pool.max || 20, // número máximo de conexão do pool
-      acquireTimeout: config_bd.pool.timeout_nova_conexao || 30000,
-      timeout: config_bd.timeout || 60000,
-      typeCast: false,
-      charset: config_bd.charset || 'UTF-8_GENERAL_CLI',
-      timezone: config_bd.timezone || 'America/Sao_Paulo',
+  public static getConexao(): Conexao {
+    if (!this._pool) {
+      this._pool = mysql.createPool({
+        host: config_bd.host || 'localhost',
+        port: config_bd.porta || 3306,
+        database: config_bd.nome_bd || 'sisgo',
+        user: config_bd.usuario || 'sisgo',
+        password: config_bd.senha || 'DADOS',
+        queueLimit: config_bd.pool.max_fila || 10, // número máximo de conexões na fila de espera do pool
+        connectionLimit: config_bd.pool.max || 20, // número máximo de conexão do pool
+        acquireTimeout: config_bd.pool.timeout_nova_conexao || 30000,
+        timeout: config_bd.timeout || 60000,
+        typeCast: false,
+        charset: config_bd.charset || 'UTF-8_GENERAL_CLI',
+        timezone: config_bd.timezone || 'America/Sao_Paulo',
+      });
+    }
+
+    let retorno: Conexao;
+
+    this._pool.getConnection(function(err, con) {
+      if (err) throw new ErroBanco('Erro ao adiquirir conexão!', err);
+      retorno = new Conexao(con);
+    });
+
+    return retorno;
+  }
+
+  public liberar() {
+    this._con.release();
+  }
+
+  public abrirTransacao(): Promise<void> {
+    const obj = this;
+    return new Promise(function(sucesso, falha) {
+      obj._con.beginTransaction(function(err) {
+        if (err) falha(err);
+        sucesso();
+      });
     });
   }
 
-  public static iniciarTransacao(processamento: Function): Promise {
-    const con: Conexao;
-    return new Promise((sucesso, falha) => {
-      con = this.getConexao();
-      con._pool.getConnection((erro, conexao) => {
-        if (erro) falha(erro);
+  public voltarTransacao(): Promise<void> {
+    const obj = this;
+    return new Promise(function(sucesso, falha) {
+      obj._con.rollback(function(err) {
+        if (err) falha(err);
+        sucesso();
+      });
+    });
+  }
 
-        conexao.beginTransaction((err) => {
-          if (err) falha(err);
-          try {
-            processamento(conexao);
-            conexao.commit();
-            sucesso(con);
-          } catch (error) {
-            conexao.rollback();
-            falha(error);
-          }
-        });
+  public concluirTransacao(): Promise<void> {
+    const obj = this;
+    return new Promise(function(sucesso, falha) {
+      obj._con.commit(function(err) {
+        if (err) {
+          falha(err);
+          obj.voltarTransacao();
+        }
+        sucesso();
+      });
+    });
+  }
+
+  public consultar(sql: string): Promise {
+    const obj = this;
+    return new Promise(function(sucesso, falha) {
+      obj._con.query(sql, function (err, resultado, colunas) {
+        
       });
     });
   }
