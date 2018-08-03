@@ -1,33 +1,31 @@
 'use strict';
 
 export enum SimNao {
-  sim: true = 'sim',
-  nao: false = 'não'
+  sim = 'sim',
+  nao = 'não'
 }
 
-export function removerCaracteresEspeciais(s: string) {
-  return s.replace([
-    '&',
-    '°',
-    '´',
-    '#',
-    '@',
-    '%',
-    '\n',
-    '\n\r',
-    '~',
-    '?',
-    '\\',
-    '|',
-    '€',
-    '$',
-    '^',
-    '{',
-    '}',
-    '*',
-    '.',
-    '-',
-    '>',
-    '<'
-  ], '');
+export enum Meses {
+  janeiro,
+  fevereiro,
+  marco,
+  abril,
+  maio,
+  junho,
+  julho,
+  agosto,
+  setembro,
+  outubro,
+  novembro,
+  dezembro
+}
+
+export enum DiaSemana {
+  domingo,
+  segunda,
+  terca,
+  quarta,
+  quinta,
+  sexta,
+  sabado
 }

@@ -10,8 +10,6 @@ export class Tabela {
   public static listarColunas(): string {
     let resultado: string;
 
-    this._colunas.forEach((coluna, i) => {
-      resultado = resultado + coluna
-    })
+    return '';
   }
 }

@@ -15,6 +15,7 @@ import * as helmet from 'helmet';
 import * as history from 'connect-history-api-fallback';
 import { Rotas } from './routes';
 import { Server } from 'http';
+import { Usuario } from './model/usuario';
 
 export class Servidor {
   private _app: express.Application;
@@ -45,7 +46,7 @@ export class Servidor {
 
     this._config = {
       key: fs.readFileSync(path.join(__dirname, '../certificado/server.key')),
-      cert: fs.readFileSync(path.join(__dirname, '../certificado/server.crt')),
+      cert: fs.readFileSync(path.join(__dirname, '../certificado/server.crt'))
     };
 
     this._app.use(express.static(path.join(__dirname, '../dist/public')));
@@ -56,16 +57,16 @@ export class Servidor {
         webpackDevMiddleware(compiler, {
           publicPath: path.join(__dirname, ''),
           logLevel: 'info',
-          stats: 'minimal',
-        }),
+          stats: 'minimal'
+        })
       );
       this._app.use(
         webpackHotMiddleware(compiler, {
           log: console.log,
           path: '/__webpack_hmr',
           heartbeat: 10 * 1000,
-          reload: true,
-        }),
+          reload: true
+        })
       );
     }
     this._app.set('views', path.join(__dirname, '../dist/public/views'));
@@ -81,14 +82,16 @@ export class Servidor {
         keys: ['chave1'],
         secure: true,
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000, // 24 horas para expirar
-      }),
+        maxAge: 24 * 60 * 60 * 1000 // 24 horas para expirar
+      })
     );
     // configurando rotas
     this._rotas.rotas(this._app);
     this._app.use(history);
     this._app.use(require('errorhandler')());
     this._http2 = spdy.createServer(this._config, this._app);
+
+    Usuario.criarTabela();
   }
 }
 

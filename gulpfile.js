@@ -24,16 +24,12 @@ gulp.task('build:server', () => {
     .pipe(tsConfig());
 
   return merge([
-    ts.js
-      .pipe(sourcemaps.write('.', { sourceRoot: './', addComment: false }))
-      .pipe(gulp.dest('./build')),
-    ts.dts
-      .pipe(sourcemaps.write('.', {sourceRoot: '../definitions', addComment: false}))
-      .pipe(gulp.dest('./build/definitions'))
+    ts.js.pipe(sourcemaps.write('.', { sourceRoot: './', addComment: false })).pipe(gulp.dest('./build')),
+    ts.dts.pipe(sourcemaps.write('.', { sourceRoot: '../definitions', addComment: false })).pipe(gulp.dest('./build/definitions'))
   ]);
 });
 
-gulp.task('build:client', done => {
+gulp.task('build:client', (done) => {
   webpack(webpackConfig, function(erro) {
     if (erro) {
       throw new gutil.PluginError('webpack:build', erro);
@@ -44,7 +40,7 @@ gulp.task('build:client', done => {
 
 gulp.task('build', gulp.series('limpar', 'copiar', 'build:client', 'build:server'));
 
-gulp.task('nodemon', done => {
+gulp.task('nodemon', (done) => {
   const stream = nodemon({
     script: './build/main.js',
     ext: 'js',
@@ -69,12 +65,10 @@ gulp.task('nodemon', done => {
     .on('start', done);
 });
 
-gulp.task('monitorar', /* gulp.parallel('nodemon'), */ () => {
-  gulp
-    .watch('./src/', { delay: 2000 }, gulp.series('build:server'))
-    .on('change', () => {
-      gutil.log('recompilando servidor!');
-    });
+gulp.task('monitorar', gulp.series('build:server'), () => {
+  gulp.watch('./src/', { delay: 2000 }, gulp.series('build:server')).on('change', () => {
+    gutil.log('recompilando servidor!');
+  });
   gulp.watch('./client/static/', gulp.series('copiar'));
 });
 
