@@ -1,15 +1,13 @@
-const path          = require('path'),
-  webpack           = require('webpack'),
-  DashboardPlugin   = require('webpack-dashboard/plugin'),
+const path = require('path'),
+  webpack = require('webpack'),
+  DashboardPlugin = require('webpack-dashboard/plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  VueLoaderPlugin   = require('vue-loader/lib/plugin');
-  // FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
+  VueLoaderPlugin = require('vue-loader/lib/plugin'),
+  CopyWebpackPlugin = require('copy-webpack-plugin');
+// FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
 module.exports = {
-  entry: [
-    './client/src/main.js',
-    'webpack-hot-middleware/client?overlay=false'
-  ],
+  entry: ['./client/src/main.js', 'webpack-hot-middleware/client?overlay=false'],
   output: {
     path: path.resolve(__dirname, './dist/public'),
     publicPath: '/',
@@ -48,7 +46,23 @@ module.exports = {
   },
   performance: {
     hints: false
-  }
+  },
+  plugins: [
+    new CopyWebpackPlugin(
+      [
+        { from: 'client/static/css/*.min.css', to: 'dist/public/css/[name].css', force: true },
+        { from: 'client/static/font/**/*', to: 'dist/public/font/', force: true },
+        { from: 'client/static/img/**/*', to: 'dist/public/img/', force: true },
+        { from: 'client/static/js/*.min.js', to: 'dist/public/js/[name].js', force: true },
+        { from: 'client/static/view/*.min.js', to: 'dist/public/index.html', force: true }
+      ],
+      { debug: 'debug' }
+    ),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    }),
+    new VueLoaderPlugin()
+  ]
 };
 
 if (process.env.NODE_ENV === 'production' || 'pro') {
@@ -67,10 +81,6 @@ if (process.env.NODE_ENV === 'production' || 'pro') {
         warnings: false
       }
     }), */
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    }),
-    new VueLoaderPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.join(__dirname, './client/static/view/index.html'),
@@ -91,17 +101,7 @@ if (process.env.NODE_ENV === 'production' || 'pro') {
       'process.env': {
         NODE_ENV: 'development'
       }
-    }), /*
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }), */
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
     }),
-    new VueLoaderPlugin(),
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),

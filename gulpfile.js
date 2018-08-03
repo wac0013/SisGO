@@ -29,7 +29,7 @@ gulp.task('build:server', () => {
   ]);
 });
 
-gulp.task('build:client', (done) => {
+gulp.task('build:client', gulp.series('limpar', 'copiar'), (done) => {
   webpack(webpackConfig, function(erro) {
     if (erro) {
       throw new gutil.PluginError('webpack:build', erro);
@@ -65,7 +65,7 @@ gulp.task('nodemon', (done) => {
     .on('start', done);
 });
 
-gulp.task('monitorar', gulp.series('build:server'), () => {
+gulp.task('monitorar', gulp.series('build:client', 'build:server'), () => {
   gulp.watch('./src/', { delay: 2000 }, gulp.series('build:server')).on('change', () => {
     gutil.log('recompilando servidor!');
   });
