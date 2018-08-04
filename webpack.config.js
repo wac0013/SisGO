@@ -2,8 +2,7 @@ const path = require('path'),
   webpack = require('webpack'),
   DashboardPlugin = require('webpack-dashboard/plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
-  VueLoaderPlugin = require('vue-loader/lib/plugin'),
-  CopyWebpackPlugin = require('copy-webpack-plugin');
+  VueLoaderPlugin = require('vue-loader/lib/plugin');
 // FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
 module.exports = {
@@ -48,16 +47,6 @@ module.exports = {
     hints: false
   },
   plugins: [
-    new CopyWebpackPlugin(
-      [
-        { from: 'client/static/css/*.min.css', to: 'dist/public/css/[name].css', force: true },
-        { from: 'client/static/font/**/*', to: 'dist/public/font/', force: true },
-        { from: 'client/static/img/**/*', to: 'dist/public/img/', force: true },
-        { from: 'client/static/js/*.min.js', to: 'dist/public/js/[name].js', force: true },
-        { from: 'client/static/view/*.min.js', to: 'dist/public/index.html', force: true }
-      ],
-      { debug: 'debug' }
-    ),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
