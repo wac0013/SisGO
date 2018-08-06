@@ -6,24 +6,19 @@ import * as bib from '../lib';
 import { ErroBanco } from './errosBanco';
 
 export class Conexao {
-  private _id: number;
-  private _con: mysql.PoolConnection;
+  private _con: mysql.PoolConnection | null | undefined = null;
 
   private static _schema: Tabela[];
   private static _pool: mysql.Pool;
+  private static _conexao: Conexao = new Conexao();
 
-  private constructor(con: mysql.PoolConnection) {
-    this._con = con;
-    this._id = con.threadId || 0;
-  }
-
-  public static getConexao(): Promise<Conexao> {
+  constructor(conexao?: mysql.PoolConnection) {
     const config_bd = require('../../config/db_conf.json');
     const self = this;
 
-    if (!self._pool) {
+    if (!Conexao._pool) {
       try {
-        self._pool = mysql.createPool({
+        Conexao._pool = mysql.createPool({
           host: config_bd.host || 'localhost',
           port: config_bd.porta || 3306,
           database: config_bd.nome_bd || 'sisgo',
@@ -41,12 +36,16 @@ export class Conexao {
       }
     }
 
-    if (!self._pool) throw new ErroBanco('Não foi possível criar pool de conexções');
+    if (conexao) {
+      this._con = conexao;
+    }
+  }
 
+  private static getConexao(): Promise<mysql.PoolConnection> {
     return new Promise(function(sucesso, falha) {
-      self._pool.getConnection(function(err, con) {
-        if (err) throw new ErroBanco('Erro ao adiquirir conexão!', err);
-        sucesso(new Conexao(con));
+      Conexao._pool.getConnection(function(err, con) {
+        if (err) falha(err);
+        sucesso(con);
       });
     });
   }
@@ -55,19 +54,19 @@ export class Conexao {
     const self = this;
     return new Promise(function(sucesso, falha) {
       self.getConexao().then(function(con) {
-        con._con.beginTransaction(function(err) {
+        con.beginTransaction(function(err) {
           if (err) falha(err);
           try {
-            sucesso(con);
-            con._con.commit(function(erro) {
+            sucesso(new Conexao(con));
+            con.commit(function(erro) {
               if (erro) falha(erro);
             });
           } catch (error) {
-            con._con.rollback(function(erro) {
+            con.rollback(function(erro) {
               if (erro) falha(erro);
             });
           } finally {
-            con.liberar();
+            con.release();
           }
         });
       });
@@ -79,7 +78,7 @@ export class Conexao {
 
     return new Promise(function(sucesso, falha) {
       self.getConexao().then(function(con) {
-        con._con.query(consulta, valores, function(err, res, col) {
+        con.query(consulta, valores, function(err, res, col) {
           if (err) falha(err);
           sucesso();
         });
@@ -88,7 +87,7 @@ export class Conexao {
   }
 
   public liberar() {
-    this._con.release();
+    if (this._con) con.release();
   }
 
   public abrirTransacao(): Promise<void> {
