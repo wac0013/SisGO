@@ -15,7 +15,6 @@ import * as helmet from 'helmet';
 import * as history from 'connect-history-api-fallback';
 import { Rotas } from './routes';
 import { Server } from 'http';
-import { Usuario } from './model/usuario';
 
 export class Servidor {
   private _app: express.Application;
@@ -50,7 +49,7 @@ export class Servidor {
     };
 
     this._app.use(express.static(path.join(__dirname, '../dist/public')));
-    this._app.use(express.static(path.join(__dirname, '../dist/public/view')));
+    // this._app.use(express.static(path.join(__dirname, '../dist/public/view')));
 
     if (process.env.NODE_ENV === 'development' || 'dev') {
       this._app.use(
@@ -90,8 +89,6 @@ export class Servidor {
     this._app.use(history);
     this._app.use(require('errorhandler')());
     this._http2 = spdy.createServer(this._config, this._app);
-
-    Usuario.criarTabela();
   }
 }
 

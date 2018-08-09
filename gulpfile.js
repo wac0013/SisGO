@@ -65,15 +65,25 @@ gulp.task('nodemon', (done) => {
     .on('start', done);
 });
 
-gulp.task('monitorar', gulp.series('build:client', 'build:server'), () => {
-  gulp.watch('./src/', { delay: 2000 }, gulp.series('build:server')).on('change', () => {
-    gutil.log('recompilando servidor!');
-  });
-  gulp.watch('./client/static/', gulp.series('copiar'));
+gulp.task('monitorar', () => {
+  gulp
+    .watch('./src/', { delay: 2000 }, gulp.series('build:server'))
+    .on('change', () => {
+      gutil.log('recompilando servidor!');
+    })
+    .on('error', () => {
+      gutil.log('erro ao recompilar servidor');
+    });
+  gulp.watch('./client/static/', gulp.series('copiar')).on('change', () => {
+    gutil.log('arquivos do client alterados!');
+  })
+    .on('error', () => {
+      gutil.log('erro ao recompilar servidor');
+    });
 });
 
 gulp.task('pro');
 
-gulp.task('dev', gulp.series('build', gulp.parallel('monitorar', 'nodemon')));
+gulp.task('dev', gulp.parallel('monitorar', 'nodemon'));
 
 gulp.task('default');

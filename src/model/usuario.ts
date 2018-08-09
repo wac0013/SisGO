@@ -23,33 +23,22 @@ export class Usuario extends Tabela {
   public static criarTabela(con?: Conexao): Promise<void> {
     const self = this;
     return new Promise(function(sucesso, falha) {
-      const f = function(conexao: Conexao) {
-        const sql =
-          'create table if not exists ' +
-          self.name +
-          ' {' +
-          'login varchar(20) not null, ' +
-          'senha varchar(20) not null default "teste", ' +
-          'primary key (login)' +
-          '}';
+      const sql =
+        'create table if not exists ' +
+        self.name +
+        ' {' +
+        'login varchar(20) not null, ' +
+        'senha varchar(20) not null default "teste", ' +
+        'primary key (login)' +
+        '}';
 
-        conexao
-          .consultar(sql)
-          .then(function() {
-            sucesso();
-          })
-          .catch(function(err) {
-            falha(err);
-          });
-      };
-
-      if (!con) {
-        Conexao.getConexao().then(function(c) {
-          f(c);
+      Conexao.consultar(sql)
+        .then(function() {
+          sucesso();
+        })
+        .catch(function(err) {
+          falha(err);
         });
-      } else {
-        f(con);
-      }
     });
   }
 }

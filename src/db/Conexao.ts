@@ -44,8 +44,7 @@ export class Conexao {
   private static getConexao(): Promise<mysql.PoolConnection> {
     return new Promise(function(sucesso, falha) {
       Conexao._pool.getConnection(function(err, con) {
-        if (err) falha(err);
-        sucesso(con);
+        err ? falha(err) : sucesso(con);
       });
     });
   }
@@ -53,23 +52,31 @@ export class Conexao {
   public static abrirTransacao(): Promise<Conexao> {
     const self = this;
     return new Promise(function(sucesso, falha) {
-      self.getConexao().then(function(con) {
-        con.beginTransaction(function(err) {
-          if (err) falha(err);
-          try {
-            sucesso(new Conexao(con));
-            con.commit(function(erro) {
-              if (erro) falha(erro);
-            });
-          } catch (error) {
-            con.rollback(function(erro) {
-              if (erro) falha(erro);
-            });
-          } finally {
-            con.release();
-          }
+      self
+        .getConexao()
+        .then(function(con) {
+          con.beginTransaction(function(err) {
+            if (err) {
+              falha(err);
+            } else {
+              try {
+                sucesso(new Conexao(con));
+                con.commit(function(erro) {
+                  if (erro) falha(erro);
+                });
+              } catch (error) {
+                con.rollback(function(erro) {
+                  if (erro) falha(erro);
+                });
+              } finally {
+                con.release();
+              }
+            }
+          });
+        })
+        .catch(function(err) {
+          falha(err);
         });
-      });
     });
   }
 
@@ -77,66 +84,86 @@ export class Conexao {
     const self = this;
 
     return new Promise(function(sucesso, falha) {
-      self.getConexao().then(function(con) {
-        con.query(consulta, valores, function(err, res, col) {
-          if (err) falha(err);
-          sucesso();
+      self
+        .getConexao()
+        .then(function(con) {
+          con.query(consulta, valores, function(err, res, col) {
+            err ? falha(err) : sucesso(con);
+          });
+        })
+        .catch(function(err) {
+          falha(err);
         });
-      });
     });
   }
 
   public liberar() {
-    if (this._con) con.release();
+    if (this._con) this._con.release();
   }
 
   public abrirTransacao(): Promise<void> {
     const obj = this;
     return new Promise(function(sucesso, falha) {
-      obj._con.beginTransaction(function(err) {
-        if (err) falha(err);
-        sucesso();
-      });
+      if (!obj._con) {
+        falha(new ErroBanco('Não foi possível obter conexão com banco de dados!'));
+      } else {
+        obj._con.beginTransaction(function(err) {
+          if (err) falha(err);
+          sucesso();
+        });
+      }
     });
   }
 
   public voltarTransacao(): Promise<void> {
     const obj = this;
     return new Promise(function(sucesso, falha) {
-      obj._con.rollback(function(err) {
-        if (err) falha(err);
-        sucesso();
-      });
+      if (!obj._con) {
+        falha(new ErroBanco('Não foi possível obter conexão com banco de dados!'));
+      } else {
+        obj._con.rollback(function(err) {
+          if (err) falha(err);
+          sucesso();
+        });
+      }
     });
   }
 
   public concluirTransacao(): Promise<void> {
     const obj = this;
     return new Promise(function(sucesso, falha) {
-      obj._con.commit(function(err) {
-        if (err) {
-          falha(err);
-          obj.voltarTransacao();
-        }
-        sucesso();
-      });
+      if (!obj._con) {
+        falha(new ErroBanco('Não foi possível obter conexão com banco de dados!'));
+      } else {
+        obj._con.commit(function(err) {
+          if (err) {
+            falha(err);
+            obj.voltarTransacao();
+          }
+          sucesso();
+        });
+      }
     });
   }
 
   public consultar(sql: string): Promise<any> {
     const obj = this;
     return new Promise(function(sucesso, falha) {
-      obj._con.query(sql, function(err, res, col) {
-        if (err) falha(err);
-        sucesso({
-          resultado: res,
-          colunas: col
+      if (!obj._con) {
+        falha(new ErroBanco('Não foi possível obter conexão com banco de dados!'));
+      } else {
+        obj._con.query(sql, function(err, res, col) {
+          if (err) falha(err);
+          sucesso({
+            resultado: res,
+            colunas: col
+          });
         });
-      });
+      }
     });
   }
 
   public get status(): string {
-    return this._con.state;
+    return this._con ? this._con.state : 'Conexão na estabelecida';
   }
 }
