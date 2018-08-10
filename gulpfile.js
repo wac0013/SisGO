@@ -24,8 +24,8 @@ gulp.task('build:server', () => {
     .pipe(tsConfig());
 
   return merge([
-    ts.js.pipe(sourcemaps.write('.', { sourceRoot: './', addComment: false })).pipe(gulp.dest('./build')),
-    ts.dts.pipe(sourcemaps.write('.', { sourceRoot: '../definitions', addComment: false })).pipe(gulp.dest('./build/definitions'))
+    ts.js.pipe(sourcemaps.write('.')).pipe(gulp.dest('./build')),
+    ts.dts.pipe(sourcemaps.write('.')).pipe(gulp.dest('./build/definitions'))
   ]);
 });
 
@@ -74,9 +74,11 @@ gulp.task('monitorar', () => {
     .on('error', () => {
       gutil.log('erro ao recompilar servidor');
     });
-  gulp.watch('./client/static/', gulp.series('copiar')).on('change', () => {
-    gutil.log('arquivos do client alterados!');
-  })
+  gulp
+    .watch('./client/static/', gulp.series('copiar'))
+    .on('change', () => {
+      gutil.log('arquivos do client alterados!');
+    })
     .on('error', () => {
       gutil.log('erro ao recompilar servidor');
     });
@@ -84,6 +86,6 @@ gulp.task('monitorar', () => {
 
 gulp.task('pro');
 
-gulp.task('dev', gulp.parallel('monitorar', 'nodemon'));
+gulp.task('dev', gulp.series('build:server', 'monitorar'));
 
 gulp.task('default');

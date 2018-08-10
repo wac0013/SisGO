@@ -1,6 +1,6 @@
-
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
+import index from '../components/principal.vue';
 
 Vue.use(Router);
 

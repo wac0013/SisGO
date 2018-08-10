@@ -1,12 +1,13 @@
-import Vue from "vue";
-import principal from "./components/principal";
-import rotas from "./routes";
+import Vue from 'vue';
+import principal from './components/principal';
+import rotas from './routes';
 
-Vue.component("principal", principal);
+Vue.component('principal', principal);
 
 // eslint-disable-next-line no-new
 new Vue({
-  el: "#app",
+  el: '#app',
   rotas,
-  components: principal
+  components: principal,
+  template: '<principal/>'
 });
