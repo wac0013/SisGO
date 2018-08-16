@@ -49,13 +49,12 @@ export class Servidor {
     };
 
     this._app.use(express.static(path.join(__dirname, '../dist/public')));
-    // this._app.use(express.static(path.join(__dirname, '../dist/public/view')));
+    this._app.use(express.static(path.join(__dirname, '../dist/public/view')));
 
     if (process.env.NODE_ENV === 'development' || 'dev') {
       this._app.use(
         webpackDevMiddleware(compiler, {
           publicPath: path.join(__dirname, ''),
-          logLevel: 'info',
           stats: 'minimal'
         })
       );

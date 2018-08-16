@@ -2,6 +2,7 @@ const path = require('path'),
   webpack = require('webpack'),
   DashboardPlugin = require('webpack-dashboard/plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
+  CopyWebpackPlugin = require('copy-webpack-plugin'),
   VueLoaderPlugin = require('vue-loader/lib/plugin');
 // FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
@@ -47,6 +48,14 @@ module.exports = {
     hints: false
   },
   plugins: [
+    new CopyWebpackPlugin([
+      { from: 'client/static/*', to: '*' },
+      { from: 'client/static/css/', to: 'css/' },
+      { from: 'client/static/js/', to: 'js/' },
+      { from: 'client/static/img/', to: 'img/' },
+      { from: 'client/static/font/', to: 'font/' },
+      { from: 'client/static/view/', to: '' }
+    ]),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     }),
@@ -84,6 +93,7 @@ if (process.env.NODE_ENV === 'production' || 'pro') {
 } else if (process.env.NODE_ENV === 'development' || 'dev') {
   module.exports.devtool = '#eval-source-map';
   module.exports.mode = 'development';
+  module.exports.watch = true;
   // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({

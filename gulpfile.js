@@ -2,11 +2,10 @@ const del = require('del'),
   gulp = require('gulp'),
   gutil = require('gulp-util'),
   merge = require('merge2'),
-  webpack = require('webpack'),
+  webpack = require('webpack-stream'),
   nodemon = require('gulp-nodemon'),
   typescript = require('gulp-typescript'),
-  sourcemaps = require('gulp-sourcemaps'),
-  webpackConfig = require('./webpack.config');
+  sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('limpar', () => {
   return del(['./dist/']);
@@ -29,29 +28,30 @@ gulp.task('build:server', () => {
   ]);
 });
 
-gulp.task('build:client', gulp.series('limpar', 'copiar'), (done) => {
-  webpack(webpackConfig, function(erro) {
-    if (erro) {
-      throw new gutil.PluginError('webpack:build', erro);
-    }
-    done();
-  });
+gulp.task('build:client', () => {
+  const config = require('./webpack.config.js');
+  config.watch = true;
+  const compiler = webpack(config);
+
+  return gulp
+    .src('client/src/main.js')
+    .pipe(compiler)
+    .pipe(gulp.dest('dist/public'));
 });
 
 gulp.task('build', gulp.series('limpar', 'copiar', 'build:client', 'build:server'));
 
 gulp.task('nodemon', (done) => {
   const stream = nodemon({
-    script: './build/main.js',
+    script: 'build\\main.js',
     ext: 'js',
     env: {
       NODE_ENV: 'dev',
       PORT: 3000
     },
-    watch: ['build'],
-    ignore: ['./node_modules', './src', './dist'],
+    watch: ['build\\main.js', 'webpack.config.js'],
     exec: 'node --inspect=9229',
-    delay: 5000
+    delay: '5000'
   });
 
   stream
@@ -75,7 +75,7 @@ gulp.task('monitorar', () => {
       gutil.log('erro ao recompilar servidor');
     });
   gulp
-    .watch('./client/static/', gulp.series('copiar'))
+    .watch('./client/', gulp.series('copiar'))
     .on('change', () => {
       gutil.log('arquivos do client alterados!');
     })
@@ -86,6 +86,4 @@ gulp.task('monitorar', () => {
 
 gulp.task('pro');
 
-gulp.task('dev', gulp.series('build:server', 'monitorar'));
-
-gulp.task('default');
+gulp.task('dev', gulp.series('build:server', 'nodemon', 'monitorar'));
