@@ -40,7 +40,8 @@ export class Servidor {
     this._app = express();
     this._rotas = new Rotas();
 
-    const compiler = webpack(require('../webpack.config.js'));
+    const wabpackConfig = require('../webpack.config.js');
+    const compiler = webpack(wabpackConfig);
     const session = require('cookie-session');
 
     this._config = {
@@ -54,8 +55,10 @@ export class Servidor {
     if (process.env.NODE_ENV === 'development' || 'dev') {
       this._app.use(
         webpackDevMiddleware(compiler, {
-          publicPath: path.join(__dirname, ''),
-          stats: 'minimal'
+          publicPath: wabpackConfig.output.publicPath,
+          headers: {'Access-Control-Allow-Origen': '*'},
+          writeToDisk: true,
+          stats: {colors: true}
         })
       );
       this._app.use(

@@ -1,11 +1,11 @@
 {
-  "verbose": true,
+  "verbose": false,
   "restartable": "rs",
   "ext": "js",
   "env": {
     "NODE_ENV": "development",
     "PORT": 3000
   },
-  "watch": ["./build/"],
+  "watch": ["./build/", "webpack.config.js"],
   "delay": "5000"
 }

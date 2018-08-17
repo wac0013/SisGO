@@ -49,52 +49,21 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: 'client/static/*', to: '*' },
-      { from: 'client/static/css/', to: 'css/' },
-      { from: 'client/static/js/', to: 'js/' },
-      { from: 'client/static/img/', to: 'img/' },
-      { from: 'client/static/font/', to: 'font/' },
-      { from: 'client/static/view/', to: '' }
+      { from: 'client/static/*', to: '*', force: true },
+      { from: 'client/static/css/', to: 'css/', force: true },
+      { from: 'client/static/js/', to: 'js/', force: true },
+      { from: 'client/static/img/', to: 'img/', force: true },
+      { from: 'client/static/font/', to: 'font/', force: true } // ,
+      // { from: 'client/static/view/', to: '', force: true }
     ]),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true
-    }),
     new VueLoaderPlugin()
   ]
 };
 
-if (process.env.NODE_ENV === 'production' || 'pro') {
-  module.exports.devtool = '#source-map';
-  module.exports.mode = 'production';
-  // http://vue-loader.vuejs.org/en/workflow/production.html
-  module.exports.plugins = (module.exports.plugins || []).concat([
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      }
-    }),
-    /* new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }), */
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: path.join(__dirname, './client/static/view/index.html'),
-      inject: true,
-      minify: {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeAttributeQuotes: true
-      }
-    })
-  ]);
-} else if (process.env.NODE_ENV === 'development' || 'dev') {
+if (process.env.NODE_ENV === 'development' || 'dev') {
   module.exports.devtool = '#eval-source-map';
   module.exports.mode = 'development';
   module.exports.watch = true;
-  // http://vue-loader.vuejs.org/en/workflow/production.html
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
@@ -105,11 +74,33 @@ if (process.env.NODE_ENV === 'production' || 'pro') {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.NamedModulesPlugin(),
-    // new FriendlyErrorsPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.join(__dirname, './client/static/view/index.html'),
       inject: true
+    })
+  ]);
+} else {
+  module.exports.devtool = '#source-map';
+  module.exports.mode = 'production';
+  module.exports.plugins = (module.exports.plugins || []).concat([
+    new webpack.LoaderOptionsPlugin({
+      minimize: true
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: '"production"'
+      }
+    }),
+    new HtmlWebpackPlugin({
+      filename: 'index.html',
+      template: path.join(__dirname, './client/static/view/index.html'),
+      inject: true,
+      minify: {
+        removeComments: true,
+        collapseWhitespace: true,
+        removeAttributeQuotes: true
+      }
     })
   ]);
 }
