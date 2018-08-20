@@ -56,9 +56,9 @@ export class Servidor {
       this._app.use(
         webpackDevMiddleware(compiler, {
           publicPath: wabpackConfig.output.publicPath,
-          headers: {'Access-Control-Allow-Origen': '*'},
+          headers: { 'Access-Control-Allow-Origen': '*' },
           writeToDisk: true,
-          stats: {colors: true}
+          stats: 'minimal'
         })
       );
       this._app.use(

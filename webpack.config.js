@@ -3,6 +3,7 @@ const path = require('path'),
   DashboardPlugin = require('webpack-dashboard/plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
+  CleanWebpackPlugin = require('clean-webpack-plugin'),
   VueLoaderPlugin = require('vue-loader/lib/plugin');
 // FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
@@ -48,13 +49,14 @@ module.exports = {
     hints: false
   },
   plugins: [
+    new CleanWebpackPlugin(['dist'], { watch: true }),
     new CopyWebpackPlugin([
-      { from: 'client/static/*', to: '*', force: true },
+      { from: 'client/static/manifest.json', to: path.resolve(__dirname, './dist/public'), force: true },
       { from: 'client/static/css/', to: 'css/', force: true },
       { from: 'client/static/js/', to: 'js/', force: true },
       { from: 'client/static/img/', to: 'img/', force: true },
-      { from: 'client/static/font/', to: 'font/', force: true } // ,
-      // { from: 'client/static/view/', to: '', force: true }
+      { from: 'client/static/font/', to: 'font/', force: true },
+      { from: 'client/static/view/', to: path.resolve(__dirname, './dist/public'), force: true }
     ]),
     new VueLoaderPlugin()
   ]
