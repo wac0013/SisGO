@@ -17,6 +17,14 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.css$/,
+        use: ['vue-style-loader', 'css-loader']
+      },
+      {
+        test: /\.less$/,
+        use: ['vue-style-loader', 'css-loader', 'less-loader']
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -25,24 +33,31 @@ module.exports = {
             // the 'scss' and 'sass' values for the lang attribute to the right configs here.
             // other preprocessors should work out of the box, no loader config like this necessary.
             scss: 'vue-style-loader!css-loader!sass-loader',
-            sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax'
+            sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax',
+            less: 'vue-style-loader!css-loader!less-loader'
           }
           // other vue-loader options go here
         }
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.jpe?g$|\.gif$|\.png$|\.ttf$|\.eot$|\.svg$/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'
         }
+      },
+      {
+        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: 'url-loader?limit=10000&mimetype=application/fontwoff'
       }
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js', '.vue', '.json'],
+    extensions: ['*', '.js', '.vue', '.json'],
     alias: {
-      vue$: 'vue/dist/vue.esm.js'
+      vue$: 'vue/dist/vue.esm.js',
+      '../../theme.config': path.join(__dirname, 'client/src/styles/theme.config'),
+      '@': 'client/src/components'
     }
   },
   performance: {
@@ -69,8 +84,9 @@ if (process.env.NODE_ENV === 'development' || 'dev') {
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
-        NODE_ENV: 'development'
-      }
+        NODE_ENV: "'development'"
+      },
+      development: true
     }),
     new DashboardPlugin(),
     new webpack.HotModuleReplacementPlugin(),

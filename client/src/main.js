@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import principal from './components/principal';
+import principal from './screens/principal';
 import rotas from './routes';
+import 'styles/';
 
 Vue.component('principal', principal);
 
