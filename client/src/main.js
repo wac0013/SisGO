@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import principal from './screens/principal';
 import rotas from './routes';
-import 'styles/';
+// import './styles/semantic.less';
+import 'semantic-ui-less/semantic.less';
 
 Vue.component('principal', principal);
 

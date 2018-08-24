@@ -4,7 +4,8 @@ const path = require('path'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   CleanWebpackPlugin = require('clean-webpack-plugin'),
-  VueLoaderPlugin = require('vue-loader/lib/plugin');
+  VueLoaderPlugin = require('vue-loader/lib/plugin'),
+  MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin');
 
 module.exports = {
@@ -22,7 +23,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: ['vue-style-loader', 'css-loader', 'less-loader']
+        use: ['vue-style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
       },
       {
         test: /\.vue$/,
@@ -40,15 +41,18 @@ module.exports = {
         }
       },
       {
-        test: /\.jpe?g$|\.gif$|\.png$|\.ttf$|\.eot$|\.svg$/,
+        test: /\.jpe?g$|\.gif$|\.png$|\.svg$/,
         loader: 'file-loader',
         options: {
-          name: '[name].[ext]?[hash]'
+          name: 'img/[name].[ext]'
         }
       },
       {
-        test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&mimetype=application/fontwoff'
+        test: /\.ttf$|\.woff$|\.woff2$|\.eot$/,
+        loader: 'file-loader',
+        options: {
+          name: 'fonts/[name].[ext]'
+        }
       }
     ]
   },
@@ -67,12 +71,22 @@ module.exports = {
     new CleanWebpackPlugin(['dist'], { watch: true }),
     new CopyWebpackPlugin([
       { from: 'client/static/manifest.json', to: path.resolve(__dirname, './dist/public'), force: true },
-      { from: 'client/static/css/', to: 'css/', force: true },
-      { from: 'client/static/js/', to: 'js/', force: true },
-      { from: 'client/static/img/', to: 'img/', force: true },
-      { from: 'client/static/font/', to: 'font/', force: true },
+      { from: 'client/static/css/', to: 'css/', force: true, ignore: ['*.gitkeep'] },
+      { from: 'client/static/js/', to: 'js/', force: true, ignore: ['*.gitkeep'] },
+      { from: 'client/static/img/', to: 'img/', force: true, ignore: ['*.gitkeep'] },
+      { from: 'client/static/font/', to: 'font/', force: true, ignore: ['*.gitkeep'] },
       { from: 'client/static/view/', to: path.resolve(__dirname, './dist/public'), force: true }
     ]),
+    new webpack.ProvidePlugin({
+      $: 'jquery',
+      jquery: 'jquery',
+      'window.jQuery': 'jquery',
+      jQuery: 'jquery'
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'css/[name].css',
+      chunkFilename: 'css/[id].css'
+    }),
     new VueLoaderPlugin()
   ]
 };
