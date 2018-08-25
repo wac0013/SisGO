@@ -2,7 +2,7 @@
 
 import { Tabela } from './Tabela';
 import * as mysql from 'mysql';
-import * as bib from '../lib';
+import * as bib from '../bib';
 import { ErroBanco } from './errosBanco';
 
 export class Conexao {
@@ -42,8 +42,8 @@ export class Conexao {
   }
 
   private static getConexao(): Promise<mysql.PoolConnection> {
-    return new Promise(function(sucesso, falha) {
-      Conexao._pool.getConnection(function(err, con) {
+    return new Promise(function (sucesso, falha) {
+      Conexao._pool.getConnection(function (err, con) {
         err ? falha(err) : sucesso(con);
       });
     });
@@ -51,21 +51,21 @@ export class Conexao {
 
   public static abrirTransacao(): Promise<Conexao> {
     const self = this;
-    return new Promise(function(sucesso, falha) {
+    return new Promise(function (sucesso, falha) {
       self
         .getConexao()
-        .then(function(con) {
-          con.beginTransaction(function(err) {
+        .then(function (con) {
+          con.beginTransaction(function (err) {
             if (err) {
               falha(err);
             } else {
               try {
                 sucesso(new Conexao(con));
-                con.commit(function(erro) {
+                con.commit(function (erro) {
                   if (erro) falha(erro);
                 });
               } catch (error) {
-                con.rollback(function(erro) {
+                con.rollback(function (erro) {
                   if (erro) falha(erro);
                 });
               } finally {
@@ -74,7 +74,7 @@ export class Conexao {
             }
           });
         })
-        .catch(function(err) {
+        .catch(function (err) {
           falha(err);
         });
     });
@@ -83,15 +83,15 @@ export class Conexao {
   public static consultar(consulta: string, valores?: any[]): Promise<any> {
     const self = this;
 
-    return new Promise(function(sucesso, falha) {
+    return new Promise(function (sucesso, falha) {
       self
         .getConexao()
-        .then(function(con) {
-          con.query(consulta, valores, function(err, res, col) {
+        .then(function (con) {
+          con.query(consulta, valores, function (err, res, col) {
             err ? falha(err) : sucesso(con);
           });
         })
-        .catch(function(err) {
+        .catch(function (err) {
           falha(err);
         });
     });
@@ -103,11 +103,11 @@ export class Conexao {
 
   public abrirTransacao(): Promise<void> {
     const obj = this;
-    return new Promise(function(sucesso, falha) {
+    return new Promise(function (sucesso, falha) {
       if (!obj._con) {
         falha(new ErroBanco('Não foi possível obter conexão com banco de dados!'));
       } else {
-        obj._con.beginTransaction(function(err) {
+        obj._con.beginTransaction(function (err) {
           if (err) falha(err);
           sucesso();
         });
@@ -117,11 +117,11 @@ export class Conexao {
 
   public voltarTransacao(): Promise<void> {
     const obj = this;
-    return new Promise(function(sucesso, falha) {
+    return new Promise(function (sucesso, falha) {
       if (!obj._con) {
         falha(new ErroBanco('Não foi possível obter conexão com banco de dados!'));
       } else {
-        obj._con.rollback(function(err) {
+        obj._con.rollback(function (err) {
           if (err) falha(err);
           sucesso();
         });
@@ -131,11 +131,11 @@ export class Conexao {
 
   public concluirTransacao(): Promise<void> {
     const obj = this;
-    return new Promise(function(sucesso, falha) {
+    return new Promise(function (sucesso, falha) {
       if (!obj._con) {
         falha(new ErroBanco('Não foi possível obter conexão com banco de dados!'));
       } else {
-        obj._con.commit(function(err) {
+        obj._con.commit(function (err) {
           if (err) {
             falha(err);
             obj.voltarTransacao();
@@ -148,11 +148,11 @@ export class Conexao {
 
   public consultar(sql: string): Promise<any> {
     const obj = this;
-    return new Promise(function(sucesso, falha) {
+    return new Promise(function (sucesso, falha) {
       if (!obj._con) {
         falha(new ErroBanco('Não foi possível obter conexão com banco de dados!'));
       } else {
-        obj._con.query(sql, function(err, res, col) {
+        obj._con.query(sql, function (err, res, col) {
           if (err) falha(err);
           sucesso({
             resultado: res,

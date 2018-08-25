@@ -1,7 +1,7 @@
 'use strict';
 
-import { Conexao } from '../db/Conexao';
-import { Tabela } from '../db/Tabela';
+import { Conexao } from '../bd/Conexao';
+import { Tabela } from '../bd/Tabela';
 
 export class Usuario extends Tabela {
   private _login: string;
@@ -22,7 +22,7 @@ export class Usuario extends Tabela {
 
   public static criarTabela(con?: Conexao): Promise<void> {
     const self = this;
-    return new Promise(function(sucesso, falha) {
+    return new Promise(function (sucesso, falha) {
       const sql =
         'create table if not exists ' +
         self.name +
@@ -33,10 +33,10 @@ export class Usuario extends Tabela {
         '}';
 
       Conexao.consultar(sql)
-        .then(function() {
+        .then(function () {
           sucesso();
         })
-        .catch(function(err) {
+        .catch(function (err) {
           falha(err);
         });
     });

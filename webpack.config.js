@@ -60,8 +60,8 @@ module.exports = {
     extensions: ['*', '.js', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
-      '../../theme.config': path.join(__dirname, 'client/src/styles/theme.config'),
-      '@': 'client/src/components'
+      '../../theme.config': path.join(__dirname, 'client/src/semantic-config/tema.config'),
+      '@': 'client/src/componentes/'
     }
   },
   performance: {

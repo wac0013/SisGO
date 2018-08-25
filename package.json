@@ -64,6 +64,7 @@
     "@types/webpack": "^4.4.8",
     "@types/webpack-dev-middleware": "^2.0.2",
     "@types/webpack-hot-middleware": "^2.16.4",
+    "@vue/devtools": "^4.1.5",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "clean-webpack-plugin": "^0.1.19",

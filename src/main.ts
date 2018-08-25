@@ -13,7 +13,7 @@ import * as spdy from 'spdy';
 import * as webpack from 'webpack';
 import * as helmet from 'helmet';
 import * as history from 'connect-history-api-fallback';
-import { Rotas } from './routes';
+import { Rotas } from './rotas';
 import { Server } from 'http';
 
 export class Servidor {
@@ -26,7 +26,7 @@ export class Servidor {
     const porta = process.env.PORT || 3000;
     const app = new Servidor();
 
-    app._http2.listen(porta, function(erro: Error) {
+    app._http2.listen(porta, function (erro: Error) {
       if (erro) {
         console.error('Ocorreu um erro ao iniciar o servidor na porta ' + 3000 + '\n' + erro);
         process.exit(1);
