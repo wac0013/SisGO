@@ -42,9 +42,9 @@ export default {
     let parent_form = false;
     let parent = this.$parent;
 
-    while (parent != this.$parent.$parent) {
+    /* while (parent != this.$parent.$parent) {
       parent_form = this.$el = 'form';
-    }
+    } */
     if (this.$el.indexOf('form') == -1) {
       $(this.$el).addClass('ui input');
     } else {
