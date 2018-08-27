@@ -42,7 +42,6 @@
     "morgan": "^1.9.0",
     "mysql": "^2.16.0",
     "oracledb": "^2.3.0",
-    "spdy": "^3.4.7",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1"
   },
@@ -64,7 +63,6 @@
     "@types/webpack": "^4.4.8",
     "@types/webpack-dev-middleware": "^2.0.2",
     "@types/webpack-hot-middleware": "^2.16.4",
-    "@vue/devtools": "^4.1.5",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "clean-webpack-plugin": "^0.1.19",

@@ -14,11 +14,11 @@ import * as webpack from 'webpack';
 import * as helmet from 'helmet';
 import * as history from 'connect-history-api-fallback';
 import { Rotas } from './rotas';
-import { Server } from 'http';
+import { Server, createServer } from 'https';
 
 export class Servidor {
   private _app: express.Application;
-  private _http2: spdy.Server;
+  private _http2: Server;
   private _config: Object;
   private _rotas: Rotas;
 
@@ -49,6 +49,9 @@ export class Servidor {
       cert: fs.readFileSync(path.join(__dirname, '../certificado/server.crt'))
     };
 
+    this._app.set('views', path.join(__dirname, '../dist/public'));
+    this._app.set('view engine', 'html');
+
     this._app.use(express.static(path.join(__dirname, '../dist/public')));
 
     if (process.env.NODE_ENV === 'development' || 'dev') {
@@ -69,9 +72,8 @@ export class Servidor {
         })
       );
     }
-    this._app.set('views', path.join(__dirname, '../dist/public'));
-    this._app.set('view engine', 'html');
-    this._app.use(logger('tiny'));
+
+    this._app.use(logger('combined'));
     this._app.use(helmet());
     this._app.use(compression());
     this._app.use(bodyParser.json());
@@ -90,7 +92,7 @@ export class Servidor {
     this._rotas.rotas(this._app);
     this._app.use(history);
     this._app.use(require('errorhandler')());
-    this._http2 = spdy.createServer(this._config, this._app);
+    this._http2 = createServer(this._config, this._app);
   }
 }
 
