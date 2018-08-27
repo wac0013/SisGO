@@ -26,7 +26,7 @@ export class Servidor {
     const porta = process.env.PORT || 3000;
     const app = new Servidor();
 
-    app._http2.listen(porta, function (erro: Error) {
+    app._http2.listen(porta, function(erro: Error) {
       if (erro) {
         console.error('Ocorreu um erro ao iniciar o servidor na porta ' + 3000 + '\n' + erro);
         process.exit(1);
@@ -50,7 +50,6 @@ export class Servidor {
     };
 
     this._app.use(express.static(path.join(__dirname, '../dist/public')));
-    this._app.use(express.static(path.join(__dirname, '../dist/public/view')));
 
     if (process.env.NODE_ENV === 'development' || 'dev') {
       this._app.use(
@@ -70,8 +69,9 @@ export class Servidor {
         })
       );
     }
-    this._app.set('views', path.join(__dirname, '../dist/public/views'));
+    this._app.set('views', path.join(__dirname, '../dist/public'));
     this._app.set('view engine', 'html');
+    this._app.use(logger('tiny'));
     this._app.use(helmet());
     this._app.use(compression());
     this._app.use(bodyParser.json());

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import principal from './telas/principal';
 import rotas from './rotas';
-// import './styles/semantic.less';
 import 'semantic-ui-less/semantic.less';
 
 Vue.component('principal', principal);
