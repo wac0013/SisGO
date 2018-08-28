@@ -71,9 +71,11 @@ export class Servidor {
           reload: true
         })
       );
+      this._app.use(logger('dev'));
+    } else {
+      this._app.use(logger('combined'));
     }
 
-    this._app.use(logger('combined'));
     this._app.use(helmet());
     this._app.use(compression());
     this._app.use(bodyParser.json());

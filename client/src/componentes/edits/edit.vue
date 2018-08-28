@@ -42,10 +42,11 @@ export default {
     let parent_form = false;
     let parent = this.$parent;
 
-    /* while (parent != this.$parent.$parent) {
-      parent_form = this.$el = 'form';
-    } */
-    if (this.$el.indexOf('form') == -1) {
+    while (parent != this.$parent.$parent || parent != this.$root) {
+      parent_form = this.$el.nodeName == 'FORM';
+      parent = parent.$parent;
+    }
+    if (!parent_form) {
       $(this.$el).addClass('ui input');
     } else {
       this.inline ? $(this.$el).addClass('inline field') : $(this.$el).addClass('field');
