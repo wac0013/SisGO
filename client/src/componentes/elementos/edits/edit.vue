@@ -1,12 +1,18 @@
 <template>
-  <div>
+  <div :class="this.classes('ui')">
     <label v-if="label">{{label}}</label>
-    <input :placeholder="placeholder" :type="tipo">
+    <input v-if="tipo !== 'textaera'" :placeholder="placeholder" :type="tipo">
+    <textarea v-else/>
   </div>
 </template>
 
 <script>
+import { mixin } from 'Componentes/mixins';
+import { icone } from 'Elementos/imagens/icone';
+
 export default {
+  name: 'vEdit',
+  mixins: mixin,
   props: {
     placeholder: String,
     label: String,
@@ -16,7 +22,7 @@ export default {
     },
     tipo: {
       validator: function(val) {
-        return ['text', 'password', 'number'].indexOf(val) !== -1;
+        return ['text', 'password', 'number', 'textarea'].indexOf(val) !== -1;
       }
     },
     habilitado: {
@@ -43,8 +49,12 @@ export default {
     let parent = this.$parent;
 
     while (parent != this.$parent.$parent || parent != this.$root) {
-      parent_form = this.$el.nodeName == 'FORM';
-      parent = parent.$parent;
+      if (parent.$el.nodeName == 'FORM') {
+        parent_form = true;
+        break;
+      } else {
+        parent = parent.$parent;
+      }
     }
     if (!parent_form) {
       $(this.$el).addClass('ui input');
@@ -52,7 +62,6 @@ export default {
       this.inline ? $(this.$el).addClass('inline field') : $(this.$el).addClass('field');
     }
     this._habilitado ? $(this.$el).addClass('disabled') : $(this.$el).removeClass('disabled');
-    $(this.$el).setValue(this._valor);
   },
   methods: {
     desabilitar() {

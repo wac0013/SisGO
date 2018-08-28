@@ -7,9 +7,8 @@ import * as webpackDevMiddleware from 'webpack-dev-middleware';
 import * as webpackHotMiddleware from 'webpack-hot-middleware';
 import * as express from 'express';
 import * as logger from 'morgan';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as spdy from 'spdy';
+import { join } from 'path';
+import { readFileSync } from 'fs';
 import * as webpack from 'webpack';
 import * as helmet from 'helmet';
 import * as history from 'connect-history-api-fallback';
@@ -45,14 +44,14 @@ export class Servidor {
     const session = require('cookie-session');
 
     this._config = {
-      key: fs.readFileSync(path.join(__dirname, '../certificado/server.key')),
-      cert: fs.readFileSync(path.join(__dirname, '../certificado/server.crt'))
+      key: readFileSync(join(__dirname, '../certificado/server.key')),
+      cert: readFileSync(join(__dirname, '../certificado/server.crt'))
     };
 
-    this._app.set('views', path.join(__dirname, '../dist/public'));
+    this._app.set('views', join(__dirname, '../dist/public'));
     this._app.set('view engine', 'html');
 
-    this._app.use(express.static(path.join(__dirname, '../dist/public')));
+    this._app.use(express.static(join(__dirname, '../dist/public')));
 
     if (process.env.NODE_ENV === 'development' || 'dev') {
       this._app.use(

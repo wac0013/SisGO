@@ -1,15 +1,20 @@
 <template>
   <div>
     <h1>Bem vindo</h1>
-    <edit label="teste"></edit>
+    <v-form>
+      <v-edit label="teste"></v-edit>
+    </v-form>
   </div>
 </template>
 
 <script>
-import edit from '../componentes/edits/edit';
+import vEdit from 'Elementos/edits/edit';
+import vForm from 'Colecoes/formularios/formulario';
+
 export default {
   components: {
-    edit
+    vEdit,
+    vForm
   }
 };
 </script>

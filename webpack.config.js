@@ -26,6 +26,20 @@ module.exports = {
         use: ['vue-style-loader', MiniCssExtractPlugin.loader, 'css-loader', 'less-loader']
       },
       {
+        test: /\.jpe?g$|\.gif$|\.png$|\.svg$/,
+        loader: 'file-loader',
+        options: {
+          name: 'img/[name].[ext]'
+        }
+      },
+      {
+        test: /\.ttf$|\.woff$|\.woff2$|\.eot$/,
+        loader: 'file-loader',
+        options: {
+          name: 'fonts/[name].[ext]'
+        }
+      },
+      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {
@@ -41,27 +55,22 @@ module.exports = {
         }
       },
       {
-        test: /\.jpe?g$|\.gif$|\.png$|\.svg$/,
-        loader: 'file-loader',
-        options: {
-          name: 'img/[name].[ext]'
-        }
-      },
-      {
-        test: /\.ttf$|\.woff$|\.woff2$|\.eot$/,
-        loader: 'file-loader',
-        options: {
-          name: 'fonts/[name].[ext]'
-        }
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    extensions: ['*', '.js', '.vue', '.json'],
+    extensions: ['*', '.js', '.ts', '.tsx', 'jsx', '.vue', '.json'],
     alias: {
       vue$: 'vue/dist/vue.esm.js',
       '../../theme.config': path.join(__dirname, 'client/src/semantic-config/tema.config'),
-      '@': 'client/src/componentes/'
+      Componentes: path.join(__dirname, 'client/src/componentes/'),
+      Elementos: path.join(__dirname, 'client/src/componentes/elementos/'),
+      Colecoes: path.join(__dirname, 'client/src/componentes/colecoes/'),
+      Modulos: path.join(__dirname, 'client/src/componentes/modulos/'),
+      Exibicoes: path.join(__dirname, 'client/src/componentes/exibicoes/')
     }
   },
   performance: {
