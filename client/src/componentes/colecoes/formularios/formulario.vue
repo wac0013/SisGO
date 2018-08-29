@@ -7,11 +7,8 @@
 </template>
 
 <script>
-import { mixin } from 'Componentes/mixins';
-
 export default {
   name: 'vForm',
-  mixins: mixin,
   mounted() {
     this._valido = true;
   },

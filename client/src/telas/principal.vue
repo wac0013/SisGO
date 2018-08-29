@@ -2,7 +2,7 @@
   <div>
     <h1>Bem vindo</h1>
     <v-form>
-      <v-edit label="teste"></v-edit>
+      <v-edit label="teste" tipo="teste"></v-edit>
     </v-form>
   </div>
 </template>

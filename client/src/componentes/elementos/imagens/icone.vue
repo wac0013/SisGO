@@ -11,17 +11,13 @@
 </template>
 
 <script>
-import { mixin } from 'Componentes/mixins';
-
-  export default {
-    name: 'vIcone',
-    mixins: mixin,
-    props: {
-      cor: Enum.Color()
-    }
+export default {
+  name: 'vIcone',
+  props: {
+    cor: String
   }
+};
 </script>
 
 <style scoped>
-
 </style>

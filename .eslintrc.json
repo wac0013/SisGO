@@ -78,7 +78,7 @@
       }
     ],
     "key-spacing": [
-      "error",
+      "warn",
       {
         "beforeColon": false,
         "afterColon": true

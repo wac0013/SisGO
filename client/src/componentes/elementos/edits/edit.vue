@@ -1,18 +1,36 @@
 <template>
-  <div :class="this.classes('ui')">
-    <label v-if="label">{{label}}</label>
+  <div :class="
+    this.classes(
+      'ui',
+      !this.parent_form && 'input',
+      this.parent_form && this.inline && 'inline',
+      this.parent_form && 'field',
+      !this._habilitado && 'disabled'
+    )"
+  >
+    <label v-if="label && this.parent_form">{{label}}</label>
     <input v-if="tipo !== 'textaera'" :placeholder="placeholder" :type="tipo">
     <textarea v-else/>
   </div>
 </template>
 
 <script>
-import { mixin } from 'Componentes/mixins';
 import { icone } from 'Elementos/imagens/icone';
+import { Enum } from '../../bib/constantes.js';
+
+export const tipos = {
+  TEXTO: 'text',
+  SENHA: 'password',
+  NUMERO: 'number',
+  AREA_TEXTO: 'textarea'
+};
+
+function validaTipos(val) {
+  return Object.getOwnPropertyNames(tipos).indexOf(val);
+}
 
 export default {
   name: 'vEdit',
-  mixins: mixin,
   props: {
     placeholder: String,
     label: String,
@@ -20,14 +38,10 @@ export default {
       type: Boolean,
       default: false
     },
-    tipo: {
-      validator: function(val) {
-        return ['text', 'password', 'number', 'textarea'].indexOf(val) !== -1;
-      }
-    },
+    tipo: Enum.Social(),
     habilitado: {
       Type: Boolean,
-      default: false
+      default: true
     },
     tamanho: Number,
     fluid: {
@@ -37,31 +51,27 @@ export default {
   },
   data() {
     return {
-      _habilitado: true
+      _habilitado: true,
+      _show_label: false,
+      parent_form: false
     };
   },
   created() {
     this._habilitado = this.habilitado;
     this._valor = '';
   },
+  beforeCreate() {},
   mounted() {
-    let parent_form = false;
     let parent = this.$parent;
 
     while (parent != this.$parent.$parent || parent != this.$root) {
       if (parent.$el.nodeName == 'FORM') {
-        parent_form = true;
+        this.parent_form = true;
         break;
       } else {
         parent = parent.$parent;
       }
     }
-    if (!parent_form) {
-      $(this.$el).addClass('ui input');
-    } else {
-      this.inline ? $(this.$el).addClass('inline field') : $(this.$el).addClass('field');
-    }
-    this._habilitado ? $(this.$el).addClass('disabled') : $(this.$el).removeClass('disabled');
   },
   methods: {
     desabilitar() {

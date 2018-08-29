@@ -6,7 +6,7 @@
  * Retorna uma string com a lista concatenada de valores passados como parâmetro
  */
 export const classes = function(...listaClasses) {
-  listaClasses
+  return listaClasses
     .filter(function(classe) {
       return classe && classe !== true;
     })
@@ -45,44 +45,11 @@ export const colunas = function(i) {
   return typeof i === 'number' ? numbers[i - 1] : i;
 };
 
-export const estado = {
-  ATIVO: 'active',
-  desabilitado: 'disabled',
-  erro: 'error',
-  sucesso: 'success',
-  alerta: 'warning'
+export const getEventoTeminoAnimacao = function() {
+  // eslint-disable-next-line no-undef
+  return window && window.webkitAnimationEnd ? 'webkitAnimationEnd' : 'animationend';
 };
 
-export const tamano = {};
-
-export const cor = {};
-
-export const fixado = { TOP: 'top', BOT: 'bottom' };
-
-export const alinhamento_texto = { ESQUERDA: 'top', DIREITA: 'middle', CENTRO: 'bottom', JUSTIFICADO: 'justify' };
-
-export const alinhamento_vertical = {
-  TOP: 'top',
-  MID: 'middle',
-  BOT: 'bottom'
-};
-
-export const SOCIAL = {
-  FACEBOOK: 'facebook',
-  TWITTER: 'twitter',
-  GOOGLE: 'goole',
-  PLUS: 'google plus',
-  VK: 'vk',
-  INSTAGRAM: 'instagram',
-  LINKEDIN: 'linkedin',
-  YOUTUBE: 'youtube'
-};
-/*
-Enum.Estado = Enum.Extend(['active', 'disabled', 'error', 'warning', 'success']);
-Enum.Tamanho = Enum.Extend(['mini', 'tiny', 'small', 'standard', 'medium', 'large', 'big', 'huge', 'massive']);
-Enum.Cor = Enum.Extend(['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black']);
-Enum.Attached = Enum.Extend(['top', 'bottom']);
-Enum.TextAlign = Enum.Extend(['left', 'right', 'center', 'justify']);
-Enum.VerticalAlign = Enum.Extend(['top', 'middle', 'bottom']);
-Enum.Social = Enum.Extend(['facebook', 'twitter', 'google', 'google plus', 'vk', 'instagram', 'linkedin', 'youtube']);
-*/
+export function getAlinhamentoTexto(align) {
+  return align && (align === 'justify' ? 'justified' : `${align} aligned`);
+}
