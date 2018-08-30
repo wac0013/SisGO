@@ -1,4 +1,5 @@
 export const status = {
+  CARREGANDO: 'loading',
   ATIVO: 'active',
   DESABILITADO: 'disabled',
   ERRO: 'error',
@@ -6,7 +7,7 @@ export const status = {
   ALERTA: 'warning'
 };
 
-export const tamano = {
+export const tamanho = {
   MINI: 'mini',
   MICRO: 'tiny',
   PEQUENO: 'small',
@@ -55,38 +56,61 @@ export const social = {
   INSTAGRAM: 'instagram'
 };
 
-export const Enum = {
-  Social(val) {
-    let resultado = false;
-    let vetor = Object.getOwnPropertyNames(social);
+export const tipos_input = {
+  TEXTO: 'text',
+  SENHA: 'password',
+  NUMERO: 'number',
+  AREA_TEXTO: 'textarea'
+};
 
-    for (var i = 0; i < vetor.length; ++i) {
-      resultado = vetor[i] === val || social[vetor[i]] === val;
-    }
-    return resultado;
+export const tipos_checkbox = {
+  DESLIZANTE: 'slider',
+  ALTERANAR: 'toggle'
+};
+
+export const Enum = {
+  Edit() {
+    return validacao(tipos_input);
   },
-  Cor(val) {
-    let resultado = false;
-    return resultado;
+  Checkbox() {
+    return validacao(tipos_checkbox);
   },
-  Fixado(val) {
-    let resultado = false;
-    return resultado;
+  Social() {
+    return validacao(social);
   },
-  Status(val) {
-    let resultado = false;
-    return resultado;
+  Cor() {
+    return validacao(cor);
   },
-  Tamanho(val) {
-    let resultado = false;
-    return resultado;
+  Fixado() {
+    return validacao(fixado);
   },
-  AlinhamentoTexto(val) {
-    let resultado = false;
-    return resultado;
+  Status() {
+    return validacao(status);
   },
-  AlinhamentoVertical(val) {
-    let resultado = false;
-    return resultado;
+  Tamanho() {
+    return validacao(tamanho);
+  },
+  AlinhamentoTexto() {
+    return validacao(alinhamento_texto);
+  },
+  AlinhamentoVertical() {
+    return validacao(alinhamento_vertical);
   }
+};
+
+var validacao = function(obj) {
+  return {
+    validator: function(val) {
+      let resultado = false;
+      let vetor = Object.getOwnPropertyNames(obj);
+
+      for (var i = 0; i < vetor.length; ++i) {
+        resultado = vetor[i] === val || obj[vetor[i]] === val;
+        if (resultado) {
+          break;
+        }
+      }
+      return resultado;
+    }
+  };
 };

@@ -1,16 +1,19 @@
-import Vue from 'vue';
-import Router from 'vue-router';
-import index from '../telas/principal.vue';
+// import Vue from 'vue';
+import index from 'Telas/principal';
+import login from 'Telas/login';
 
-Vue.use(Router);
-
-export default new Router({
+export default {
   mode: 'history',
   routes: [
     {
       path: '/',
       name: 'Index',
       component: index
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: login
     }
   ]
-});
+};

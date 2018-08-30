@@ -4,30 +4,20 @@
       'ui',
       !this.parent_form && 'input',
       this.parent_form && this.inline && 'inline',
+      this.obrigatorio && 'required',
       this.parent_form && 'field',
       !this._habilitado && 'disabled'
     )"
   >
     <label v-if="label && this.parent_form">{{label}}</label>
     <input v-if="tipo !== 'textaera'" :placeholder="placeholder" :type="tipo">
-    <textarea v-else/>
+    <textarea v-else :rows="linhas"/>
   </div>
 </template>
 
 <script>
 import { icone } from 'Elementos/imagens/icone';
 import { Enum } from '../../bib/constantes.js';
-
-export const tipos = {
-  TEXTO: 'text',
-  SENHA: 'password',
-  NUMERO: 'number',
-  AREA_TEXTO: 'textarea'
-};
-
-function validaTipos(val) {
-  return Object.getOwnPropertyNames(tipos).indexOf(val);
-}
 
 export default {
   name: 'vEdit',
@@ -38,15 +28,23 @@ export default {
       type: Boolean,
       default: false
     },
-    tipo: Enum.Social(),
+    tipo: Enum.Edit(),
     habilitado: {
       Type: Boolean,
       default: true
     },
     tamanho: Number,
-    fluid: {
+    fluido: {
       type: Boolean,
       default: false
+    },
+    obrigatorio: {
+      type: Boolean,
+      default: false
+    },
+    linhas: {
+      type: Number,
+      default: 5
     }
   },
   data() {
@@ -83,6 +81,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-</style>

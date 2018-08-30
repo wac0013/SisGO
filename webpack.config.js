@@ -70,7 +70,8 @@ module.exports = {
       Elementos: path.join(__dirname, 'client/src/componentes/elementos/'),
       Colecoes: path.join(__dirname, 'client/src/componentes/colecoes/'),
       Modulos: path.join(__dirname, 'client/src/componentes/modulos/'),
-      Exibicoes: path.join(__dirname, 'client/src/componentes/exibicoes/')
+      Exibicoes: path.join(__dirname, 'client/src/componentes/exibicoes/'),
+      Telas: path.join(__dirname, 'client/src/telas/')
     }
   },
   performance: {
