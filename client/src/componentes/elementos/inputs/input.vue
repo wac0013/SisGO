@@ -2,6 +2,7 @@
   <div :class="
     this.classes(
       'ui',
+      this.icone && 'icon',
       !this.parent_form && 'input',
       this.parent_form && this.inline && 'inline',
       this.obrigatorio && 'required',
@@ -12,6 +13,7 @@
     <label v-if="label && this.parent_form">{{label}}</label>
     <input v-if="tipo !== 'textaera'" :placeholder="placeholder" :type="tipo">
     <textarea v-else :rows="linhas"/>
+    <v-icone v-if="icone"/>
   </div>
 </template>
 
@@ -21,6 +23,9 @@ import { Enum } from '../../bib/constantes.js';
 
 export default {
   name: 'vEdit',
+  components: {
+    'v-icone': () => import('Colecoes/forms/form') //async import
+  },
   props: {
     placeholder: String,
     label: String,
@@ -28,7 +33,7 @@ export default {
       type: Boolean,
       default: false
     },
-    tipo: Enum.Edit(),
+    tipo: Enum.Input(),
     habilitado: {
       Type: Boolean,
       default: true
@@ -45,7 +50,9 @@ export default {
     linhas: {
       type: Number,
       default: 5
-    }
+    },
+    icone: String,
+    posicao_icone: String
   },
   data() {
     return {

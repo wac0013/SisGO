@@ -69,7 +69,7 @@ export const tipos_checkbox = {
 };
 
 export const Enum = {
-  Edit() {
+  Input() {
     return validacao(tipos_input);
   },
   Checkbox() {

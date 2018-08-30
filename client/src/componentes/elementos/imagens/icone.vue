@@ -5,6 +5,7 @@
     this.tamanho,
     this.carregando && 'loading',
     this.desabilitado && 'disabled',
+    this.link && 'link',
     'icon'
   )">
   </i>
@@ -14,7 +15,14 @@
 export default {
   name: 'vIcone',
   props: {
-    cor: String
+    nome: {
+      type: String,
+      required: true
+    },
+    cor: String,
+    link: Boolean,
+    virado: Boolean,
+    girado: Boolean
   }
 };
 </script>
