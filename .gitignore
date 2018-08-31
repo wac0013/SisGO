@@ -6,7 +6,13 @@ yarn-debug.log*
 yarn-error.log*
 
 # Diretório de saída de client
-dist
+dist/
+
+# Diretório compilação do servidor
+build/
 
 # Diretório de dependências
 node_modules/
+
+# Configurações dos editores
+.vscode/

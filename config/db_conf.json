@@ -1,0 +1,17 @@
+{
+  "banco": "mysql",
+  "host": "localhost",
+  "porta": 3306,
+  "nome_bd": "sisgo",
+  "usuario": "sisgo",
+  "senha": "DADOS",
+  "time_zone": "America/Sao_Paulo",
+  "charset": "UTF-8_GENERAL_CLI",
+  "pool": {
+    "max": 20,
+    "min": 1,
+    "max_fila": 10,
+    "timeout_conexao": 60000,
+    "timeout_nova_conexao": 60000
+  }
+}

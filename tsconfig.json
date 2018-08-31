@@ -1,14 +1,26 @@
 {
   "compilerOptions": {
-      "outDir": "./server/",
-      "sourceMap": true,
-      "strict": true,
-      "noImplicitReturns": true,
-      "module": "es2015",
-      "moduleResolution": "node",
-      "target": "es5"
+    "outDir": "./build/",
+    "sourceMap": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": false,
+    "noImplicitAny": false,
+    "noEmitOnError": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es5",
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "rootDir": "./src",
+    "strict": true,
+    "locale": "pt-BR",
+    "newLine": "LF",
+    "lib": ["es2018", "es2017", "es2016", "es2015", "dom"],
+    "typeRoots": ["./node_modules/@types"]
   },
-  "include": [
-      "./src/**/*"
-  ]
+  "exclude": ["./node_modules", "./client", "./dist", "./build"],
+  "include": ["./src/**/*"]
 }
