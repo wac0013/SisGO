@@ -3,10 +3,11 @@ const del = require('del'),
   gutil = require('gulp-util'),
   merge = require('merge2'),
   ghPages = require('gulp-gh-pages'),
-  webpack = require('webpack-stream'),
+  webpack = require('webpack'),
   nodemon = require('gulp-nodemon'),
   typescript = require('gulp-typescript'),
-  sourcemaps = require('gulp-sourcemaps');
+  sourcemaps = require('gulp-sourcemaps'),
+  WebpackDevServer = require('webpack-dev-server');
 
 gulp.task('limpar', () => {
   return del(['./dist/']);
@@ -29,14 +30,37 @@ gulp.task('build:server', () => {
   ]);
 });
 
-gulp.task('build:client', () => {
+gulp.task('build:client', (done) => {
+  const config = require('./webpack.config.js');
+  config.output.path = '/SisGO/';
+
+  webpack(config, function(err, stats) {
+    if (err) throw new gutil.PluginError('webpack', err);
+    gutil.log(
+      '[webpack]',
+      stats.toString({
+        colors: true,
+        env: true,
+        publicPath: true,
+        errorDetails: true,
+        errors: true,
+        warnings: true,
+        modulesSort: true
+      })
+    );
+    done();
+  });
+});
+
+gulp.task('dev:client', () => {
+  process.env.NODE_ENV = 'dev';
   const config = require('./webpack.config.js');
   const compiler = webpack(config);
 
-  return gulp
-    .src('client/src/main.js')
-    .pipe(compiler)
-    .pipe(gulp.dest('dist/public'));
+  new WebpackDevServer(compiler, config.devServer).listen(3000, 'localhost', function(err) {
+    if (err) throw new gutil.PluginError('webpack-dev-server', err);
+    gutil.log('[webpack-dev-server]', 'http://localhost:8080/webpack-dev-server/index.html');
+  });
 });
 
 gulp.task('deploy', () => {
@@ -69,6 +93,6 @@ gulp.task('monitorar', () => {
     });
 });
 
-gulp.task('dev', gulp.series('build:server', 'nodemon', gulp.parallel('monitorar', 'build:client')));
+gulp.task('dev', gulp.series('build:server', 'nodemon', gulp.parallel('dev:client', 'monitorar')));
 
 gulp.task('default', gulp.series('build:server', 'build:client', 'deploy'));

@@ -5,11 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node_modules\\.bin\\gulp ",
-    "debug": "node build\\main.js --inspect=9229",
     "build-server-watch": "node_modules\\.bin\\tsc -w",
     "build-client": "node_modules\\.bin\\webpack",
     "dev-server": "node_modules\\.bin\\webpack-dev-server",
-    "dev": "npm run dev-server && build-server-watch",
+    "dev": "node_modules\\.bin\\gulp dev",
     "deploy": "push-dir --dir=dist/public --branch=gh-pages --cleanup --force"
   },
   "repository": {

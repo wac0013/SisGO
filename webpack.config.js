@@ -1,5 +1,5 @@
 const path = require('path'),
-  fs = require('fs'),
+  // fs = require('fs'),
   webpack = require('webpack'),
   DashboardPlugin = require('webpack-dashboard/plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
