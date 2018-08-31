@@ -2,6 +2,7 @@ const del = require('del'),
   gulp = require('gulp'),
   gutil = require('gulp-util'),
   merge = require('merge2'),
+  ghPages = require('gulp-gh-pages'),
   webpack = require('webpack-stream'),
   nodemon = require('gulp-nodemon'),
   typescript = require('gulp-typescript'),
@@ -30,7 +31,6 @@ gulp.task('build:server', () => {
 
 gulp.task('build:client', () => {
   const config = require('./webpack.config.js');
-  config.watch = true;
   const compiler = webpack(config);
 
   return gulp
@@ -39,20 +39,13 @@ gulp.task('build:client', () => {
     .pipe(gulp.dest('dist/public'));
 });
 
-gulp.task('build', gulp.series('limpar', 'copiar', 'build:client', 'build:server'));
+gulp.task('deploy', () => {
+  return gulp.src('./dist/public/**/*').pipe(ghPages({ force: true }));
+});
 
 gulp.task('nodemon', (done) => {
-  const stream = nodemon({
-    script: 'build\\main.js',
-    ext: 'js',
-    env: {
-      NODE_ENV: 'dev',
-      PORT: 3000
-    },
-    watch: ['build\\main.js', 'webpack.config.js'],
-    exec: 'node --inspect=9229',
-    delay: '5000'
-  });
+  let conf = require('./nodemon.json');
+  const stream = nodemon(conf);
 
   stream
     .on('restart', function() {
@@ -74,16 +67,8 @@ gulp.task('monitorar', () => {
     .on('error', () => {
       gutil.log('erro ao recompilar servidor');
     });
-  gulp
-    .watch('./client/', gulp.series('copiar'))
-    .on('change', () => {
-      gutil.log('arquivos do client alterados!');
-    })
-    .on('error', () => {
-      gutil.log('erro ao recompilar servidor');
-    });
 });
 
-gulp.task('pro');
+gulp.task('dev', gulp.series('build:server', 'nodemon', gulp.parallel('monitorar', 'build:client')));
 
-gulp.task('dev', gulp.series('build:server', 'nodemon', 'monitorar'));
+gulp.task('default', gulp.series('build:server', 'build:client', 'deploy'));

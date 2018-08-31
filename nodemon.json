@@ -7,5 +7,6 @@
     "PORT": 3000
   },
   "watch": ["./build/", "webpack.config.js"],
+  "exec": "node --inspect=9229",
   "delay": "5000"
 }

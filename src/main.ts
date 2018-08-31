@@ -3,8 +3,6 @@
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as compression from 'compression';
-import * as webpackDevMiddleware from 'webpack-dev-middleware';
-import * as webpackHotMiddleware from 'webpack-hot-middleware';
 import * as express from 'express';
 import * as logger from 'morgan';
 import { join } from 'path';
@@ -54,22 +52,6 @@ export class Servidor {
     this._app.use(express.static(join(__dirname, '../dist/public')));
 
     if (process.env.NODE_ENV === 'development' || 'dev') {
-      this._app.use(
-        webpackDevMiddleware(compiler, {
-          publicPath: wabpackConfig.output.publicPath,
-          headers: { 'Access-Control-Allow-Origen': '*' },
-          writeToDisk: true,
-          stats: 'minimal'
-        })
-      );
-      this._app.use(
-        webpackHotMiddleware(compiler, {
-          log: console.log,
-          path: '/__webpack_hmr',
-          heartbeat: 10 * 1000,
-          reload: true
-        })
-      );
       this._app.use(logger('dev'));
     } else {
       this._app.use(logger('combined'));

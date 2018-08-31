@@ -1,4 +1,5 @@
 const path = require('path'),
+  fs = require('fs'),
   webpack = require('webpack'),
   DashboardPlugin = require('webpack-dashboard/plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
@@ -13,7 +14,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, './dist/public'),
     publicPath: '/',
-    filename: 'js/[name].js'
+    filename: 'js/[name][hash].js'
   },
   module: {
     rules: [
@@ -101,10 +102,24 @@ module.exports = {
   ]
 };
 
-if (process.env.NODE_ENV === 'development' || 'dev') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
   module.exports.devtool = '#eval-source-map';
   module.exports.mode = 'development';
   module.exports.watch = true;
+  module.exports.devServer = {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    historyApiFallback: true,
+    hot: true,
+    https: true,
+    headers: { 'Access-Control-Allow-Origen': '*' },
+    stats: 'minimal',
+    port: 3000
+  };
+  /* https: {
+      key: fs.readFileSync(join(__dirname, '../certificado/server.key')),
+      cert: fs.readFileSync(join(__dirname, '../certificado/server.crt'))
+    }, */
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.DefinePlugin({
       'process.env': {
@@ -125,6 +140,7 @@ if (process.env.NODE_ENV === 'development' || 'dev') {
 } else {
   module.exports.devtool = '#source-map';
   module.exports.mode = 'production';
+  module.exports.watch = false;
   module.exports.plugins = (module.exports.plugins || []).concat([
     new webpack.LoaderOptionsPlugin({
       minimize: true
