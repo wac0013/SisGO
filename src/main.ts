@@ -25,10 +25,10 @@ export class Servidor {
 
     app._http2.listen(porta, function(erro: Error) {
       if (erro) {
-        console.error('Ocorreu um erro ao iniciar o servidor na porta ' + 3000 + '\n' + erro);
+        console.error('Ocorreu um erro ao iniciar o servidor na porta ' + porta + '\n' + erro);
         process.exit(1);
       } else {
-        console.info('Servidor executando na porta ' + 3000 + '!');
+        console.info('Servidor executando na porta ' + porta + '!');
       }
     });
   }

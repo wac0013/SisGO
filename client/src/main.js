@@ -4,10 +4,13 @@ import principal from './telas/principal';
 import rotas from './rotas';
 import 'semantic-ui-less/semantic.less';
 import { mixin } from 'Componentes/mixins';
+import SuiVue from 'semantic-ui-vue';
+
 
 var router = new VueRouter(rotas);
 
 Vue.use(VueRouter);
+Vue.use(SuiVue);
 Vue.component('principal', principal);
 Vue.mixin(mixin);
 

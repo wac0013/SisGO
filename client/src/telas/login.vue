@@ -1,11 +1,23 @@
 <template>
   <div>
     <h1>Bem vindo</h1>
-    <v-form>
-      <v-input label="email ou nome de usuário" :tipo="tipos_input.TEXTO"></v-input>
-      <v-input label="senha" :tipo="tipos_input.SENHA"></v-input>
-      <v-btn></v-btn>
-    </v-form>
+    <sui-card>
+      <sui-card-content>
+        <sui-form>
+          <sui-form-field>
+            <label>Email ou CPF</label>
+            <input placeholder="Email ou CPF" >
+            <sui-label v-if="show_label_usuario" pointing>Please enter a value</sui-label>
+          </sui-form-field>
+          <sui-form-field>
+            <label>Senha</label>
+            <input placeholder="Senha" >
+            <sui-label v-if="show_label_senha" pointing>Please enter a value</sui-label>
+          </sui-form-field>
+          <sui-button primary>Login</sui-button>
+        </sui-form>
+      </sui-card-content>
+    </sui-card>
   </div>
 </template>
 
@@ -21,7 +33,10 @@ export default {
     'v-form': () => import('Colecoes/forms/form') //async import
   },
   data() {
-    return {};
+    return {
+      show_label_senha: false,
+      show_label_usuario: false
+    };
   },
   computed: {
     tipos_input: function() {

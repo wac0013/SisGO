@@ -114,7 +114,7 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev') {
     https: true,
     headers: { 'Access-Control-Allow-Origen': '*' },
     stats: 'minimal',
-    port: 3000
+    port: 8080
   };
   /* https: {
       key: fs.readFileSync(join(__dirname, '../certificado/server.key')),

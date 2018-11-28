@@ -57,7 +57,7 @@ gulp.task('dev:client', () => {
   const config = require('./webpack.config.js');
   const compiler = webpack(config);
 
-  new WebpackDevServer(compiler, config.devServer).listen(3000, 'localhost', function(err) {
+  new WebpackDevServer(compiler, config.devServer).listen(8080, 'localhost', function(err) {
     if (err) throw new gutil.PluginError('webpack-dev-server', err);
     gutil.log('[webpack-dev-server]', 'http://localhost:8080/webpack-dev-server/index.html');
   });
