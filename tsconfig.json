@@ -14,6 +14,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
+    "strictPropertyInitialization": false,
     "rootDir": "./src",
     "strict": true,
     "locale": "pt-BR",

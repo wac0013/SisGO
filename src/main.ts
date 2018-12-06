@@ -7,11 +7,11 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import * as webpack from 'webpack';
 import * as helmet from 'helmet';
 import * as history from 'connect-history-api-fallback';
 import { Rotas } from './rotas';
 import { Server, createServer } from 'https';
+import * as versao from './modelos/versao';
 
 export class Servidor {
   private _app: express.Application;
@@ -36,9 +36,6 @@ export class Servidor {
   private constructor() {
     this._app = express();
     this._rotas = new Rotas();
-
-    const wabpackConfig = require('../webpack.config.js');
-    const compiler = webpack(wabpackConfig);
     const session = require('cookie-session');
 
     this._config = {
@@ -76,6 +73,13 @@ export class Servidor {
     this._app.use(history);
     this._app.use(require('errorhandler')());
     this._http2 = createServer(this._config, this._app);
+
+    try {
+      console.log(`iniciando`)
+      versao.Versao.teste()
+    } catch (error) {
+
+    }
   }
 }
 

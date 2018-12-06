@@ -93,6 +93,6 @@ gulp.task('monitorar', () => {
     });
 });
 
-gulp.task('dev', gulp.series('build:server', 'nodemon', gulp.parallel('dev:client', 'monitorar')));
+gulp.task('dev', gulp.series('build:server', /*'nodemon',*/ gulp.parallel('dev:client', 'monitorar')));
 
 gulp.task('default', gulp.series('build:server', 'build:client', 'deploy'));

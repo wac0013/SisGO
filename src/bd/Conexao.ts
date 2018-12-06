@@ -8,7 +8,7 @@ import { ErroBanco } from './errosBanco';
 export class Conexao {
   private _con: mysql.PoolConnection | null | undefined = null;
 
-  private static _schema: Tabela[];
+  //private static _schema: Tabela[];
   private static _pool: mysql.Pool;
   private static _conexao: Conexao = new Conexao();
 
