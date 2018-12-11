@@ -10,7 +10,7 @@ const del = require('del'),
   WebpackDevServer = require('webpack-dev-server');
 
 gulp.task('limpar', () => {
-  return del(['./dist/']);
+  return del(['./dist/', './build/']);
 });
 
 gulp.task('copiar', () => {
@@ -19,15 +19,17 @@ gulp.task('copiar', () => {
 
 gulp.task('build:server', () => {
   var tsConfig = typescript.createProject('./tsconfig.json');
-  var ts = tsConfig
-    .src()
+  var ts = gulp.src(['src/**/*.ts'], {base: 'src'})
     .pipe(sourcemaps.init({ largeFile: true }))
     .pipe(tsConfig());
 
   return merge([
-    ts.js.pipe(sourcemaps.write('.')).pipe(gulp.dest('./build')),
-    ts.dts.pipe(sourcemaps.write('.')).pipe(gulp.dest('./build/definitions'))
-  ]);
+    ts.js
+      .pipe(sourcemaps.write('.', { includeContent: false, sourceRoot: '../src' }))
+      .pipe(gulp.dest('./build')),
+    ts.dts
+      .pipe(gulp.dest('./build/definitions'))
+  ])
 });
 
 gulp.task('build:client', (done) => {
@@ -93,6 +95,6 @@ gulp.task('monitorar', () => {
     });
 });
 
-gulp.task('dev', gulp.series('build:server', /*'nodemon',*/ gulp.parallel('dev:client', 'monitorar')));
+gulp.task('dev', gulp.series('limpar', 'build:server', /*'nodemon',*/ gulp.parallel('dev:client', 'monitorar')));
 
-gulp.task('default', gulp.series('build:server', 'build:client', 'deploy'));
+gulp.task('default', gulp.series('limpar', 'build:server', 'build:client', 'deploy'));

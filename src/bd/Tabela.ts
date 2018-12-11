@@ -18,9 +18,31 @@ export class Tabela1 {
   }
 }
 
-export function Tabela<T extends {new(...args:any[]):{}}>(constructor:T) {
-  return class extends constructor {
-      newProperty = "new property";
-      hello = "override";
+export function Tabela(arg?: Object) {
+  return function (classe: any) {
+    var original = classe;
+
+    // a utility function to generate instances of a class
+    function construct(constructor, args) {
+      var c: any;
+      c = function() {
+        return constructor.apply(this, args);
+      }
+
+      c.prototype = constructor.prototype;
+      return new c();
+    }
+
+    // the new constructor behaviour
+    var f = function(...args): any {
+      console.log("New: " + original.name);
+      return construct(original, args);
+    }
+
+    // copy prototype so intanceof operator still works
+    f.prototype = original.prototype;
+
+    // return new constructor (will override original)
+    return f;
   }
 }

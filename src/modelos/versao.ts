@@ -3,7 +3,7 @@
 import { Conexao } from '../bd/Conexao';
 import { Tabela } from '../bd/Tabela';
 
-@Tabela
+//@Tabela
 export class Versao {
   private _id_versao: number = 0;
   private _major: number = 0;
@@ -32,7 +32,7 @@ export class Versao {
     return new Versao()
   }
 
-  static teste(){
+  static teste1(){
     console.log(this)
   }
 }

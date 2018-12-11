@@ -11,7 +11,7 @@ import * as helmet from 'helmet';
 import * as history from 'connect-history-api-fallback';
 import { Rotas } from './rotas';
 import { Server, createServer } from 'https';
-import * as versao from './modelos/versao';
+import {Versao} from './modelos/versao';
 
 export class Servidor {
   private _app: express.Application;
@@ -76,7 +76,8 @@ export class Servidor {
 
     try {
       console.log(`iniciando`)
-      versao.Versao.teste()
+      Versao.teste()
+      Versao.teste1()
     } catch (error) {
 
     }
