@@ -21,7 +21,8 @@ gulp.task('build:server', () => {
   var tsConfig = typescript.createProject('./tsconfig.json');
   var ts = gulp.src(['src/**/*.ts'], {base: 'src'})
     .pipe(sourcemaps.init({ largeFile: true }))
-    .pipe(tsConfig());
+    .pipe(tsConfig())
+    .on('error', () => {gutil.log(`Ocorreu um erro ao compilar servidor!!!!!`)});
 
   return merge([
     ts.js
