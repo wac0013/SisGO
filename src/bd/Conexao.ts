@@ -5,14 +5,27 @@ import * as mysql from 'mysql';
 import * as bib from '../bib';
 import { ErroBanco } from './errosBanco';
 
+export enum tp_banco {
+  SMALLINT  = 'smallint',
+  INT       = 'int',
+  BIGINT    = 'bigint',
+  VARCHAR   = 'varchar',
+  CHAR      = 'char',
+  DATE      = 'date',
+  DATE_TIME = 'datetime',
+  BLOB      = 'blob',
+  CLOB      = 'clob'
+}
+
 export class Conexao {
   private _con: mysql.PoolConnection | null | undefined = null;
+  private static _tabelas: Tabela[] = [];
 
   //private static _schema: Tabela[];
   private static _pool: mysql.Pool;
   private static _conexao: Conexao = new Conexao();
 
-  constructor(conexao?: mysql.PoolConnection) {
+  private constructor(conexao?: mysql.PoolConnection) {
     const config_bd = require('../../config/db_conf.json');
     const self = this;
 
@@ -39,6 +52,25 @@ export class Conexao {
     if (conexao) {
       this._con = conexao;
     }
+  }
+
+  public static registrarTabela(tabela: Tabela) {
+    //verifica se já existe uma classe registrada com o mesmo nome de tabela
+    if (this._tabelas.find((e) => e.nome == tabela.nome)) {
+      throw new ErroBanco(`Já existe uma classe registrada com o nome de tabela "${tabela.nome}"`);
+    }
+    this._tabelas.push(tabela)
+  }
+
+  public static get lista_tabelas(): Array<Tabela> {
+    return this._tabelas
+  }
+
+  public static getTabela(nome: string): Tabela | undefined {
+    let tab: Tabela | undefined;
+    tab = this.lista_tabelas.find((e) => e.nome == nome)
+
+    return tab
   }
 
   private static getConexao(): Promise<mysql.PoolConnection> {
@@ -88,7 +120,24 @@ export class Conexao {
         .getConexao()
         .then(function (con) {
           con.query(consulta, valores, function (err, res, col) {
-            err ? falha(err) : sucesso(con);
+            err ? falha(err) : sucesso(res);
+          });
+        })
+        .catch(function (err) {
+          falha(err);
+        });
+    });
+  }
+
+  public static executar(comando: string): Promise<void> {
+    const self = this;
+
+    return new Promise(function (sucesso, falha) {
+      self
+        .getConexao()
+        .then(function (con) {
+          con.query(comando, undefined, function (err, res, col) {
+            err ? falha(err) : sucesso();
           });
         })
         .catch(function (err) {
@@ -101,7 +150,7 @@ export class Conexao {
     if (this._con) this._con.release();
   }
 
-  public abrirTransacao(): Promise<void> {
+  public abrirTransacao(): Promise<Conexao> {
     const obj = this;
     return new Promise(function (sucesso, falha) {
       if (!obj._con) {
@@ -109,7 +158,7 @@ export class Conexao {
       } else {
         obj._con.beginTransaction(function (err) {
           if (err) falha(err);
-          sucesso();
+          sucesso(obj);
         });
       }
     });
@@ -164,6 +213,6 @@ export class Conexao {
   }
 
   public get status(): string {
-    return this._con ? this._con.state : 'Conexão na estabelecida';
+    return this._con ? this._con.state : 'Conexão nao estabelecida';
   }
 }
